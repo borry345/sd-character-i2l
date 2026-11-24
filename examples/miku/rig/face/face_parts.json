@@ -1,0 +1,133 @@
+{
+ "eye_split_x": 540,
+ "eye_split_px": 0,
+ "left": "x < eye_split_x (viewer left)",
+ "runs": {
+  "base": {
+   "eyelash_l": 1474,
+   "eyelash_r": 909,
+   "irides_l": 2102,
+   "irides_r": 1274,
+   "eyewhite_l": 2833,
+   "eyewhite_r": 1687,
+   "eyebrow_l": 254,
+   "eyebrow_r": 197,
+   "mouth_rgb_from_src": true,
+   "mouth": 114,
+   "mouth_rim_removed": 0
+  },
+  "calm": {
+   "eyelash_l": 870,
+   "eyelash_r": 483,
+   "irides_l": 0,
+   "irides_r": 0,
+   "eyewhite_l": 0,
+   "eyewhite_r": 0,
+   "eyebrow_l": 226,
+   "eyebrow_r": 162,
+   "mouth_rgb_from_src": true,
+   "mouth": 79,
+   "mouth_rim_removed": 0
+  },
+  "smile": {
+   "eyelash_l": 972,
+   "eyelash_r": 604,
+   "irides_l": 0,
+   "irides_r": 0,
+   "eyewhite_l": 0,
+   "eyewhite_r": 0,
+   "eyebrow_l": 279,
+   "eyebrow_r": 178,
+   "mouth_rgb_from_src": true,
+   "mouth": 610,
+   "mouth_rim_removed": 343,
+   "blush_boxes": [
+    [
+     469,
+     390,
+     44,
+     35
+    ],
+    [
+     590,
+     400,
+     29,
+     29
+    ]
+   ]
+  },
+  "ah": {
+   "eyelash_l": 1458,
+   "eyelash_r": 970,
+   "irides_l": 2156,
+   "irides_r": 1348,
+   "eyewhite_l": 2728,
+   "eyewhite_r": 1736,
+   "eyebrow_l": 293,
+   "eyebrow_r": 187,
+   "mouth_rgb_from_src": true,
+   "mouth": 920,
+   "mouth_rim_removed": 6
+  },
+  "ee": {
+   "eyelash_l": 1475,
+   "eyelash_r": 915,
+   "irides_l": 2049,
+   "irides_r": 1254,
+   "eyewhite_l": 2743,
+   "eyewhite_r": 1627,
+   "eyebrow_l": 255,
+   "eyebrow_r": 173,
+   "mouth_rgb_from_src": true,
+   "mouth": 735,
+   "mouth_rim_removed": 41
+  },
+  "oh": {
+   "eyelash_l": 1488,
+   "eyelash_r": 943,
+   "irides_l": 2107,
+   "irides_r": 1296,
+   "eyewhite_l": 2796,
+   "eyewhite_r": 1711,
+   "eyebrow_l": 285,
+   "eyebrow_r": 190,
+   "mouth_rgb_from_src": true,
+   "mouth": 241,
+   "mouth_rim_removed": 135
+  },
+  "surprised": {
+   "eyelash_l": 1127,
+   "eyelash_r": 742,
+   "irides_l": 0,
+   "irides_r": 0,
+   "eyewhite_l": 0,
+   "eyewhite_r": 0,
+   "eyebrow_l": 191,
+   "eyebrow_r": 151,
+   "mouth_rgb_from_src": true,
+   "mouth": 579,
+   "mouth_rim_removed": 798,
+   "sweat_boxes": [
+    [
+     480,
+     405,
+     11,
+     17
+    ]
+   ]
+  },
+  "sleeping": {
+   "eyelash_l": 789,
+   "eyelash_r": 440,
+   "irides_l": 0,
+   "irides_r": 0,
+   "eyewhite_l": 0,
+   "eyewhite_r": 0,
+   "eyebrow_l": 269,
+   "eyebrow_r": 201,
+   "mouth_rgb_from_src": true,
+   "mouth": 236,
+   "mouth_rim_removed": 32
+  }
+ }
+}

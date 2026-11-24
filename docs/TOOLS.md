@@ -17,6 +17,9 @@
 | 나누기·그리기 | [text_layers.py](#text_layerspy) | 글로 부위를 지정해 레이어 나누기 (DINO + SAM2 + LaMa) | ✔ |
 | | [amodal_complete.py](#amodal_completepy) | 앞 레이어에 가려진 부분 그리기 (SDXL) | ✔ |
 | | [mask_inpaint.py](#mask_inpaintpy) | 마스크 영역만 다시 그리기 (SDXL) | ✔ |
+| 리깅 분리 | [split_joint.py](#split_jointpy) | 레이어를 관절(무릎·팔꿈치)에서 두 조각 + 관절 외곽선으로 | |
+| | [face_parts.py](#face_partspy) | 표정 편집본 실행 결과에서 눈(좌·우)·입·홍조·땀 파츠 만들기 | |
+| 공통 | [layer_common.py](#layer_commonpy) | 여러 도구가 같이 쓰는 함수 (입·코 색 `rgb_from_src`) | |
 | 조립·확인 | [assemble_layers.py](#assemble_layerspy) | 원래 크기로 되돌리고 원본 픽셀로 PSD | |
 | | [psd_report.py](#psd_reportpy) | PSD 레이어 추출·목록·원본 비교 | |
 | | `selftest_psd_report.py` | psd_report 자체 테스트 (`$PY tools\selftest_psd_report.py <출력 폴더>`) | |
@@ -236,3 +239,44 @@ SDXL 인페인팅으로 마스크(흰색)만 다시 그려요. 8GB에 맞추려�
 & $PY tools\psd_report.py --psd <psd> --input <원본 png> --out <폴더>
 ```
 `layers\NN_이름.png`(레이어 추출), `layer_sheet.png`(목록), `composite.png`, `compare.png`(입력 / 합성 / 차이), `layers.json`, `compare_stats.json`(PSNR)
+
+## split_joint.py
+레이어 하나를 관절에서 두 조각으로 나눠요. 굽혀도 틈이 안 생기고, 서 있을 때는 원본과 같아요.
+```powershell
+& $PY tools\split_joint.py --layer legwear-l.png --cut 457,709,513,735 --out_dir legs\legwear-l --names thigh_l,shin_l
+```
+| 인자 | 기본값 | 뜻 |
+|---|---|---|
+| `--cut x0,y0,x1,y1` | 없음 | 자르는 선 (사람이 그은 빨간 선 좌표). 선 연장선으로 자름 |
+| `--at t` | 0.5 | `--cut`이 없을 때: 긴 축의 t 위치(0 위 끝, 1 아래 끝)에서 축에 수직으로 |
+| `--names a,b` | `upper,lower` | 위 조각, 아래 조각 이름 |
+| `--front` | `second` | 앞에 그릴 조각 (기본: 아래 조각 = 종아리·하박) |
+| `--cap` | 폭/2 | 관절 캡 반지름 |
+| `--line_px` | 4 | 관절 외곽선 두께 |
+
+출력과 그리는 순서 (앞→뒤):
+1. `<아래>.png`: 아래 조각 + 둥근 관절 캡 (캡은 외곽선 없음, 위 조각의 원본 픽셀)
+2. `<위>.png`: 위 조각 + 아래쪽으로 조금 더 (굽힐 때 안쪽 홈 메움, 서 있으면 가려짐)
+3. `<아래>_joint_line.png`: 관절 외곽선만. **아래 조각 뼈에 붙이고, 그리는 순서는 위 조각보다 뒤.** 서 있으면 위 조각에 가려지고, 굽히면 배경과 닿는 부분만 보여요.
+
+`joint.json`(회전 중심·자르는 선·그리는 순서), `joint_check.png`(조각 + 0·±30·±60° 굽힘)
+
+![무릎 확대](images/rig_knee_zoom.png)
+
+## face_parts.py
+원본과 **같은 구도에서 표정만 바꾼 그림**(이미지 편집 AI로 만듦)을 같은 설정으로 See-through에 돌린 뒤, 눈·입만 리그용 파츠로 만들어요.
+```powershell
+& $PY tools\face_parts.py --base out\seed1\char --expr smile=out\smile_seed1\char_smile --expr ah=... `
+  --out rig\face --effects effects --char miku
+```
+- 눈 4종(eyelash·irides·eyewhite·eyebrow)을 좌·우로 나눔: 모든 표정에서 눈 픽셀이 없는 열 (`_l` = 그림 왼쪽)
+- 입: 색은 그 실행의 원본 그림에서(`rgb_from_src`, 수염 방지), 입 둘레 살색 고리 제거
+- 홍조: 표정 face가 원본 face보다 분홍인 볼 부분 → `blush.png`
+- 땀: 표정 face의 파란 덩어리 → `sweat.png` + 공용 효과 `effects/sweat_drop/` (다른 캐릭터도 쓰게 잘라서, `source.json`에 캐릭터별 위치)
+- `check_swap.png`: 원본 얼굴에 표정 파츠를 바꿔 끼운 모습
+
+![표정 바꿔 끼우기](images/rig_face_swap.png)
+
+## layer_common.py
+여러 도구가 같이 쓰는 함수. 새 도구를 만들 때도 여기서 가져다 쓰세요.
+- `rgb_from_src(layer, src, mask=None)`: 모양(알파)은 레이어, 색은 원본 그림. See-through의 입·코 레이어는 가장자리가 반투명 회색이라 그대로 쓰면 수염처럼 보여요. **입·코 레이어를 가져오는 도구는 모두 이걸 써야 해요** (`mix_layers.py`의 `rgb_from: src`, `face_parts.py`의 입).

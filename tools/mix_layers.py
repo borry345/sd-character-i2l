@@ -46,6 +46,10 @@ import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
+import sys
+sys.path.insert(0, osp.dirname(osp.abspath(__file__)))
+from layer_common import rgb_from_src  # noqa: E402
+
 try:  # labels on check images are Korean -> a Hangul font
     FONT = ImageFont.truetype('C:/Windows/Fonts/malgun.ttf', 13)
 except OSError:
@@ -112,8 +116,8 @@ def build(L, src_rgba):
         a = keep
     out = im.copy()
     out[~a] = 0
-    if L.get('rgb_from') == 'src':  # colour from the original (See-through does this for nose/mouth)
-        out[a, :3] = src_rgba[a, :3]
+    if L.get('rgb_from') == 'src':  # colour from the original (mouth/nose whiskers, layer_common.py)
+        out = rgb_from_src(out, src_rgba, a)
     if L.get('despill') == 'magenta':  # key-mode leftovers: magenta-ish pixels take the nearest clean colour
         from scipy.ndimage import distance_transform_edt
         o = out.astype(int)
