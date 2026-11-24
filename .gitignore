@@ -1,0 +1,11 @@
+# 큰 파일·환경 (저장소에 넣지 않음)
+env/
+hf_cache/
+see-through/
+__pycache__/
+*.pyc
+
+# 실행 결과
+seethrough_test/
+outputs/
+tmp/

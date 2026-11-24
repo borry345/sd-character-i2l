@@ -1,0 +1,104 @@
+# 문제와 해결
+
+실제로 막혔던 순서대로 단계별로 모았어요. 형식: **증상 → 원인 → 해결**. 시간순 원본 기록은 [HISTORY.md](HISTORY.md).
+
+---
+
+## 1. 설치
+
+| 증상 | 원인 | 해결 |
+|---|---|---|
+| `conda create`에서 `SSL module is not available` | conda를 PATH에 넣지 않고 실행 | 그 창에서만 anaconda `Library\bin` 등을 PATH에 추가 ([INSTALL 2단계](INSTALL.md#2-파이썬-환경-python-312)) |
+| 모델 받는 중 `WinError 1314` (심볼릭 링크 권한) | Hugging Face가 여러 파일을 동시에 받으면서 심볼릭 링크 지원 여부를 동시에 검사하다 꼬임 | 다운로드 전에 `huggingface_hub.file_download.are_symlinks_supported()`를 한 번 먼저 부르고 받기 |
+| SAM2 설치가 CUDA 확장을 빌드하려다 실패하거나 torch를 바꿔 버림 | SAM2 기본 설치가 빌드·의존성 설치를 함 | `SAM2_BUILD_CUDA=0` + `--no-deps --no-build-isolation`, 커밋 c2ec8e1 |
+| See-through가 `assets`를 못 찾음 | 저장소가 리눅스 심볼릭 링크(`assets → common/assets`)를 씀 | Windows에서는 `mklink /J assets common\assets` |
+| `run_seethrough.ps1`이 python을 못 찾음 | conda 환경은 `env\python.exe`, venv는 `env\Scripts\python.exe` | 지금은 두 곳을 다 찾아요. 그래도 안 되면 `env` 위치와 `I2L_ROOT` 확인 |
+| `--tblr_split`·`--seed`를 줬는데 효과가 없음 (summary.txt의 `ARGS`에 첫 값만 있음) | `powershell -File script.ps1 -Extra @(...)`로 부르면 배열의 첫 값만 전달됨 | PowerShell 창에서 `Set-ExecutionPolicy -Scope Process Bypass` 후 `& tools\run_seethrough.ps1 ...` |
+| 내가 만든 `.ps1`이 `The string is missing the terminator`로 실패 | Windows PowerShell 5.1은 BOM 없는 `.ps1`을 ANSI로 읽어서 한글 문자열이 깨짐 | `.ps1` 안의 글은 영어로 쓰거나 UTF-8 BOM으로 저장 (저장소의 `.ps1`은 해당 없음) |
+| 입력·출력 파일을 못 찾음 | 스크립트가 실행 중 `see-through` 폴더로 이동해서 상대 경로가 그 기준이 됨 | `-Src`, `-OutDir`는 절대 경로 |
+
+## 2. See-through 실행 (메모리, 8GB GPU)
+PC A(RTX 3070 8GB, RAM 16GB)에서 예제 한 장을 돌리기까지의 시도예요.
+
+| 시도 | 결과 | 원인 / 판단 |
+|---|---|---|
+| 기본값 (group offload 켜짐) | 128초 만에 `CUBLAS_STATUS_NOT_INITIALIZED` | 텍스트 인코더만 따로 올리면 정상 → group offload와 bitsandbytes 4bit의 충돌로 추정 |
+| `--no_group_offload` | VRAM 7.9GB가 차고 공유 메모리로 0.75GB 넘침. GPU 100%인데 29분 동안 첫 단계에서 멈춤 | 다른 프로그램이 이미 GPU를 2.5GB 쓰고 있었음 |
+| `--cpu_offload` | 파이프라인을 만드는 중 RAM 부족으로 실행 도구가 강제 종료 | RAM 15.8GB로 부족 |
+| `--cpu_offload` + 다른 프로그램 정리 | `Expected all tensors to be on the same device` | 코드가 입력 장치를 text_encoder 위치로 정함 → `run_patched.py`로 토큰 id를 CUDA로 |
+| `--cpu_offload` + `run_patched.py` | VAE encode에서 또 장치 불일치 | 코드 여러 곳이 `self.unet.device` 등으로 장치를 정함 → cpu_offload 포기 |
+| **`--no_group_offload` + GPU 쓰는 프로그램 종료** | **성공** | 기본 VRAM 사용 2.5GB → 0.8GB로 줄임 (게임 런처, 메신저, 데스크톱 캐릭터 앱 등) |
+
+정리: 8GB GPU에서는 **`--no_group_offload`를 쓰고, 실행 전 GPU를 쓰는 프로그램을 모두 닫으세요.** 16GB GPU(PC B)에서는 신경 쓰지 않아도 돼요 (사용량 약 8GB).
+
+## 3. 생성 결과
+
+| 증상 | 원인 | 해결 |
+|---|---|---|
+| 같은 seed인데 PC마다 결과가 다름 (PC A의 헤드셋이 PC B에서 사라짐) | GPU마다 연산 결과가 조금씩 달라 생성이 갈라짐 | seed 하나에 기대지 말고 10개쯤 만들어 레이어별로 고르기 |
+| 머리 부위(헤드셋)가 머리 상자 밖으로 잘림 | 머리 단계 상자가 머리 + 1/5 여백으로 고정 | `-HeadGrow N` ([WORKFLOW](WORKFLOW.md#머리-자르기-상자-넓히기--headgrow)) |
+| 상자를 넓혔더니 헤드셋이 아예 사라짐 (seed3) | 넓히면 머리 부위 전체를 다시 그림 | 다른 seed를 쓰기. (개선 후보: 회차 중 픽셀이 가장 많은 결과를 남기기) |
+| 헤드셋이 엉뚱한 태그로 감 (seed1 → footwear, seed6 → objects에도) | 태그 분류가 흔들림 | 다른 태그도 확인. seed6 `objects`는 오히려 고리가 닫힌 더 좋은 모양이었음 |
+| 트윈테일과 뒤통수가 back hair 하나로 나옴 | See-through에 트윈테일 칸이 없음 | `text_layers.py`로 나누고, 가려진 뒤통수는 `amodal_complete.py` |
+| 몸이 없는 그림에서 handwear 같은 엉뚱한 레이어 | 태그가 고정이라 없는 부위도 무언가를 그림 | 그 레이어를 쓰지 않기 |
+
+## 4. 다시 그리기 (SDXL)
+
+| 증상 | 원인 | 해결 |
+|---|---|---|
+| 얼굴 회색 부분을 다시 그렸더니 머리카락·눈썹·눈이 생김 | 얼굴 모양 마스크를 주면 SDXL이 "얼굴"을 그림 | `--prefill median --strength 0.4` (피부색으로 먼저 칠하고 약하게 다듬기) |
+| `key` 모드에서 분홍·노란 머리카락, 보라 테두리 | 마젠타 배경색이 번짐 | `--candidates`로 여러 개 그려 색이 맞는 것 고르기, 남은 테두리는 mix의 `despill: magenta` |
+| `hull` 모드가 한쪽을 직선으로 자름 | 볼록 껍질 모양의 한계 | `key` 모드 또는 `--shape`로 마스크2를 직접 그려 주기 |
+| `key` 후보 중 얼굴 옆모습이 그려짐 | 프롬프트·주변 문맥이 얼굴을 떠올리게 함 | 후보 중에서 고르기 (negative에 face 포함) |
+
+## 5. 합치기 (`mix_layers.py`)
+
+| 증상 | 원인 | 해결 |
+|---|---|---|
+| 입이 얼굴 뒤로 감 | 입 깊이 중앙값(0.50)이 얼굴보다 큼 | `"depth": 0.43` |
+| 입에 수염 같은 회색 테두리 | 생성 레이어의 반투명 가장자리 색 | `"rgb_from": "src"` (See-through도 코·입은 원본 색을 씀) |
+| 레이어에 남의 검은 선 | 아래 [레이어에 남의 검은 선](#레이어에-남의-검은-선) | 레이어별로 생성 색(B) 선택 |
+| 손으로 자른 조각에 원본 모서리가 덧붙음 | `fill_missing`이 아무 레이어도 덮지 않은 원본 픽셀을 가장 가까운 레이어에 붙임 | `"no_fill": true` |
+| 두 다리를 좌우로 나눴더니 한쪽이 0px | 허벅지에서 8px 붙어 있어 연결 조각이 하나 | `"split_cut": true` |
+| 직접 다듬은 레이어(`png`)로 바꿨더니 텅 빔 | 원래 설정의 `"split": "left"`가 한 조각짜리 수정본에 적용됨 | `png`로 바꿀 때 `split` 지우기 |
+| 순서를 바꿨더니 고리 윤곽선이 얇아짐 | 뒤로 보낸 고리 위를 back_center가 덮음 | 의도한 순서인지 [확인 이미지](images/order_zoom.png)로 보고 결정 |
+
+### 레이어에 남의 검은 선
+**증상:** 합성은 원본과 비슷한데, 레이어를 하나씩 보면 face·legwear·handwear·eyewhite에 다른 부위의 윤곽선이 찍혀 있음.
+
+![A vs B](images/color_A_vs_B.png)
+
+**원인:** "보이는 픽셀은 원본 색으로"(A 방식, `visible_rgb: src`)는 **레이어 모양을 기준으로** 원본 색을 복사해요. 그런데
+1. 여러 seed에서 고른 레이어는 원본과 모양이 1~5px씩 어긋나요. 경계에서 옆 부위의 윤곽선이 이 레이어로 복사돼요.
+2. 앞 레이어의 반투명 가장자리 밑으로 복사가 이어지면서 더 번져요.
+3. 더 근본적으로는 **seed마다 숨은 내용까지 다르게 그려요.** 예를 들어 s1의 face는 s1 앞머리 모양을 기준으로 이마를 분홍으로 그렸는데, 앞머리는 s9에서 가져왔어요.
+
+원본에서 잘라낸 레이어(hair_input, PSNR 41.6dB)에서는 이 문제가 없었어요. 생성 레이어를 섞을 때만 생겨요.
+
+**시도한 것** (선 = 다른 부위 경계 근처에서 생성본보다 어두워진 픽셀, A를 100%로)
+
+| 시도 | 결과 |
+|---|---|
+| A에 색 차이 가드 (차이 60 넘으면 복사 안 함) | 레이어는 깨끗해졌지만 합성에 계단 현상 → 폐기 |
+| owner: 원본 픽셀마다 색이 맞는 맨 앞 레이어 하나만 원본 색 | 선 33%, 합성 PSNR 41 |
+| + 흐름 워프 (DIS optical flow로 레이어를 원본 쪽으로) | 평균 0.5px만 움직여 효과 없음 |
+| + SAM2로 레이어 마스크 다시 따기 | 눈 레이어(IoU 0.1)를 비워 버림 → 탈락 |
+| + Poisson 경계 블렌딩 | 숨은 부분에 회색 번짐 → 오히려 74~77% |
+| + 선 넘겨주기 · 경계 보호 · 보호한 픽셀을 앞 레이어로 | **선 2%**, PSNR 40.3. 하지만 "01" 글자·속눈썹 끝 일부 손상, 앞 레이어 바깥 윤곽이 지저분 |
+
+![잔선 측정](images/lines_marks_v26.png)
+
+**결론:** 규칙으로 고치는 건 한계가 있었어요. **레이어마다 버전(A, B, …)을 나란히 놓고 사람이 고르는 것**이 가장 깔끔했고, miku는 전부 B(생성 색), handwear-l만 A로 확정했어요.
+
+**측정할 때 주의:** 원본 자체의 선(머리카락 결 등)까지 세지 않도록 "다른 부위 경계 근처 + 그 픽셀 자체가 어두워짐"으로 세세요 (`layer_marks.py`). 고치는 규칙과 측정이 같은 것을 보면 숫자가 좋게만 나오니, 반드시 이미지로 확인하세요.
+
+## 6. 도구·환경
+
+| 증상 | 원인 | 해결 |
+|---|---|---|
+| `review_seethrough.py`가 결과 폴더 이름과 그림 이름이 다르면 실패 | 이름을 폴더에서 읽음 | PSD 파일 이름에서 읽게 수정 |
+| `selftest_psd_report.py`가 `Group.new() got multiple values for argument 'parent'` | psd-tools 1.14에서 `Group.new(parent, name)` 순서 | 인자 순서 수정 |
+| psd-tools로 만든 PSD의 레이어 투명도가 사라짐 (`topil()`이 알파 255) | `PSDImage.new("RGB")`로 만듦 | `PSDImage.new("RGBA")` (`mix_layers.py`는 처음부터 RGBA) |
+| 확인 이미지 저장 실패 `OSError: [Errno 22] Invalid argument` | 그 파일을 다른 프로그램(이미지 뷰어)에서 열고 있음 | 닫고 다시 실행 |
+| 확인 이미지의 한글이 네모로 나옴 | PIL 기본 글꼴에 한글 없음 | `ImageFont.truetype('C:/Windows/Fonts/malgun.ttf', ...)` |
+| 실행 중 작업이 강제 종료됨 (Claude Code에서 돌릴 때) | RAM이 부족하면 Claude Code가 백그라운드 작업을 끔 | 다른 프로그램을 줄이거나 `CLAUDE_CODE_DISABLE_BG_SHELL_PRESSURE_REAP=1`로 시작 |

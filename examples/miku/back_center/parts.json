@@ -1,0 +1,36 @@
+[
+ {
+  "name": "tail_left",
+  "prompt": "twin tail",
+  "side": "left",
+  "box": [
+   156.81993103027344,
+   177.39572143554688,
+   441.56866455078125,
+   808.828369140625
+  ],
+  "visible_px": 87564,
+  "filled_px": 0
+ },
+ {
+  "name": "tail_right",
+  "prompt": "twin tail",
+  "side": "right",
+  "box": [
+   606.0714111328125,
+   183.40994262695312,
+   866.85302734375,
+   815.129150390625
+  ],
+  "visible_px": 76912,
+  "filled_px": 0
+ },
+ {
+  "name": "back_center",
+  "prompt": "*",
+  "side": null,
+  "box": null,
+  "visible_px": 71662,
+  "filled_px": 1398
+ }
+]

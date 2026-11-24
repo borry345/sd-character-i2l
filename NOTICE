@@ -1,0 +1,16 @@
+sd-character-i2l
+Copyright 2026 borry345
+
+This project is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+It uses and adapts code from See-through (https://github.com/mitmul/see-through),
+licensed under the Apache License, Version 2.0. See-through itself is not included;
+it is cloned at commit e4cb250 during installation (docs/INSTALL.md).
+
+Files adapted from See-through:
+  tools/head_grow.py   - derived from run_layerdiff in inference/scripts/inference_psd_quantized.py
+  tools/run_patched.py - encode_cropped_prompt_77tokens adapted from
+                         common/modules/layerdiffuse/diffusers_kdiffusion_sdxl.py
+
+Model weights are not included. They are downloaded from Hugging Face under their own
+licenses (see README.md, "모델과 라이선스").
