@@ -1,7 +1,7 @@
 {
  "src": "seethrough_test/miku_chibi_sprite/miku_chibi_sprite/src_img.png",
  "visible_rgb": "src",
- "note": "사용자 선택 2026-11-24: front hair=Claude 선택(s9), back hair=s0 양갈래 분리, 가운데 뒷머리=oldPC42에서 s0 트윈테일 빼기(시도), head~mouth=s1, neck=s2(꺼둠), topwear=s8, handwear=s8 좌우, bottomwear=s4, legwear=s1, headwear=s6(분리 안 함) / 2026-11-24 보이는 픽셀은 모두 원본 색(visible_rgb) / pick2: back_center = oldPC42 back hair를 text_layers(DINO+SAM2+LaMa)로 분리 → amodal_complete key 모드(SDXL) seed1 / 머리카락 3장(tail_left·tail_right·back_center)은 keep_rgb(원본 색 복사 안 함) / 7단계 마무리: fill_missing(빠진 윤곽선 → 가까운 레이어) · back_center despill magenta / clean: 모든 레이어 생성 색 그대로(See-through 기본과 같음), mouth만 원본 색 / pick3 (2026-11-24): 전부 B, handwear-l만 A, headwear는 s6 objects를 사용자가 빨간 선으로 나눈 6조각 (고리 뒤=모든 머리 뒤 0.95, 고리 앞=front hair 뒤·트윈테일 앞 0.60, 왼쪽 스피커 0.58, 오른쪽 스피커=원본에서 머리에 가려 있어 tail_right 뒤 0.95) / headwear 6조각은 no_fill (빠진 곳 채우기에서 제외, 사용자 선택: 군더더기 없이) / pick4 (2026-11-24): 사용자 지정 순서(앞→뒤) handwear-l > front hair > eyelash > irides > eyewhite > eyebrow > mouth > face > headwear_speaker_l > headwear_ring_l_front > topwear > bottomwear > legwear-l > legwear-r > tail_left > back_center > handwear-r > headwear_ring_r_front > tail_right > headwear_ring_l_back > headwear_ring_r_back, neck·headwear_speaker_r 제거, legwear 좌우 분리 / handwear-l: 사용자가 직접 다듬은 파일(manual/handwear-l.png, 원본 tmp/05_handwear-l.png) 그대로 사용 / front hair·topwear·back_center: 사용자가 tmp/composite.png에 빨간 선으로 표시한 안쪽 제거(manual/remove_with_line.png, 선 자체는 유지)",
+ "note": "사용자 선택 2026-11-24: front hair=Claude 선택(s9), back hair=s0 양갈래 분리, 가운데 뒷머리=oldPC42에서 s0 트윈테일 빼기(시도), head~mouth=s1, neck=s2(꺼둠), topwear=s8, handwear=s8 좌우, bottomwear=s4, legwear=s1, headwear=s6(분리 안 함) / 2026-11-24 보이는 픽셀은 모두 원본 색(visible_rgb) / pick2: back_center = oldPC42 back hair를 text_layers(DINO+SAM2+LaMa)로 분리 → amodal_complete key 모드(SDXL) seed1 / 머리카락 3장(tail_left·tail_right·back_center)은 keep_rgb(원본 색 복사 안 함) / 7단계 마무리: fill_missing(빠진 윤곽선 → 가까운 레이어) · back_center despill magenta / clean: 모든 레이어 생성 색 그대로(See-through 기본과 같음), mouth만 원본 색 / pick3 (2026-11-24): 전부 B, handwear-l만 A, headwear는 s6 objects를 사용자가 빨간 선으로 나눈 6조각 (고리 뒤=모든 머리 뒤 0.95, 고리 앞=front hair 뒤·트윈테일 앞 0.60, 왼쪽 스피커 0.58, 오른쪽 스피커=원본에서 머리에 가려 있어 tail_right 뒤 0.95) / headwear 6조각은 no_fill (빠진 곳 채우기에서 제외, 사용자 선택: 군더더기 없이) / pick4 (2026-11-24): 사용자 지정 순서(앞→뒤) handwear-l > front hair > eyelash > irides > eyewhite > eyebrow > mouth > face > headwear_speaker_l > headwear_ring_l_front > topwear > bottomwear > legwear-l > legwear-r > tail_left > back_center > handwear-r > headwear_ring_r_front > tail_right > headwear_ring_l_back > headwear_ring_r_back, neck·headwear_speaker_r 제거, legwear 좌우 분리 / handwear-l: 사용자가 직접 다듬은 파일(manual/handwear-l.png, 원본 tmp/05_handwear-l.png) 그대로 사용 / front hair·topwear·back_center: 사용자가 tmp/composite.png에 빨간 선으로 표시한 안쪽 제거(manual/remove_with_line.png, 선 자체는 유지) / 2026-11-24 fill_missing 삭제(빈 곳은 비워 둠), no_fill 제거 / topwear: 사용자가 목을 붙인 파일(manual/topwear.png, 원본 tmp/10_topwear_new.png) 그대로 사용, erase는 이미 반영돼 있어 뺌",
  "layers": [
   {
    "name": "handwear-l",
@@ -9,8 +9,7 @@
    "tag": "handwear",
    "depth": 0.02,
    "png": "manual/handwear-l.png",
-   "keep_rgb": true,
-   "no_fill": true
+   "keep_rgb": true
   },
   {
    "name": "front hair",
@@ -68,8 +67,7 @@
    "tag": "objects",
    "png": "headwear/parts/headwear_speaker_l.png",
    "depth": 0.38,
-   "keep_rgb": true,
-   "no_fill": true
+   "keep_rgb": true
   },
   {
    "name": "headwear_ring_l_front",
@@ -77,8 +75,7 @@
    "tag": "objects",
    "png": "headwear/parts/headwear_ring_l_front.png",
    "depth": 0.425,
-   "keep_rgb": true,
-   "no_fill": true
+   "keep_rgb": true
   },
   {
    "name": "topwear",
@@ -86,7 +83,7 @@
    "tag": "topwear",
    "keep_rgb": true,
    "depth": 0.47,
-   "erase": "manual/remove_with_line.png"
+   "png": "manual/topwear.png"
   },
   {
    "name": "bottomwear",
@@ -145,8 +142,7 @@
    "tag": "objects",
    "png": "headwear/parts/headwear_ring_r_front.png",
    "depth": 0.785,
-   "keep_rgb": true,
-   "no_fill": true
+   "keep_rgb": true
   },
   {
    "name": "tail_right",
@@ -162,8 +158,7 @@
    "tag": "objects",
    "png": "headwear/parts/headwear_ring_l_back.png",
    "depth": 0.875,
-   "keep_rgb": true,
-   "no_fill": true
+   "keep_rgb": true
   },
   {
    "name": "headwear_ring_r_back",
@@ -171,10 +166,8 @@
    "tag": "objects",
    "png": "headwear/parts/headwear_ring_r_back.png",
    "depth": 0.92,
-   "keep_rgb": true,
-   "no_fill": true
+   "keep_rgb": true
   }
  ],
- "fill_missing": true,
  "rgb_thr": 999
 }

@@ -29,9 +29,7 @@ Spec (JSON):
   (top level) "align": "flow" | "sam2" | "flow+sam2" (shift layers onto the original first),
              "blend": "poisson" | "poisson_seam" (smooth the visible/hidden colour seam)
   despill    "magenta": recolour key-mode magenta leftovers with the nearest clean colour
-  (top level) "fill_missing": true = original pixels no layer covers go to the nearest layer
-  erase      mask png (white = remove): cleared from this layer at the very end (after fill_missing)
-  no_fill    true: fill_missing leaves the original pixels nearest to this layer empty (hand-cut layers)
+  erase      mask png (white = remove): cleared from this layer at the very end
   hidden     put in the PSD but switched off, and leave out of the composite check
 Depth = median of the run's <tag>_depth.png over the layer's own pixels (0 = near). PSD bottom = far.
 
@@ -536,25 +534,11 @@ def main():
                 im[halo] = 0
                 it['src_px'], it['halo_px'], it['kept_px'] = int(ok.sum()), int(halo.sum()), int((own & ~ok & ~halo).sum())
             open_ &= ~(im[..., 3] >= 250)
-    if spec.get('fill_missing'):
-        # original pixels no shown layer covers (thin outline slivers) go to the nearest shown layer,
-        # with the original colour and alpha (like assemble_layers step 4)
-        from scipy.ndimage import distance_transform_edt
-        shown = [it for it in items if not it.get('hidden')]
-        cover = np.zeros(src_rgba.shape[:2], bool)
-        for it in shown:
-            cover |= it['img'][..., 3] > 15
-        miss = (src_rgba[..., 3] > 15) & ~cover
-        if miss.any():
-            dists = [distance_transform_edt(~(it['img'][..., 3] > 15)) for it in shown]
-            near = np.argmin(np.stack(dists), 0)
-            for k, it in enumerate(shown):
-                m = miss & (near == k)
-                if it.get('no_fill'):  # hand-cut layer: leave its missing bits empty (no other layer takes them)
-                    it['unfilled_px'] = int(m.sum())
-                    continue
-                it['img'][m] = src_rgba[m]
-                it['filled_px'] = int(m.sum())
+    # "fill_missing" (give uncovered original pixels to the nearest layer) was removed on 2026-11-24:
+    # generated layers sit 1-2px off the original, so the copied pixels became dotted outline slivers on
+    # the layers. Uncovered original pixels now stay empty (missing_px in check.png / mix.json).
+    if spec.get('fill_missing') or any(L.get('no_fill') for L in spec['layers']):
+        print('[mix_layers] note: "fill_missing" / "no_fill" were removed and are ignored', flush=True)
     for it in items:
         if it.get('erase'):  # user mask (white = remove), applied last so nothing refills it
             em = np.array(Image.open(it['erase']).convert('L')) > 127

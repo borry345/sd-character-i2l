@@ -67,7 +67,6 @@ miku에서 고른 것: front hair s9 · 트윈테일 s0 · face~mouth s1 · topw
 ```json
 {
  "src": "C:/work/out/seed0/char/src_img.png",
- "fill_missing": true,
  "layers": [
   {"name": "front hair", "run": "C:/work/out/seed9", "tag": "front hair", "keep_rgb": true},
   {"name": "tail_left",  "run": "C:/work/out/seed0", "tag": "back hair", "split": "left", "keep_rgb": true},
@@ -80,6 +79,8 @@ miku에서 고른 것: front hair s9 · 트윈테일 s0 · face~mouth s1 · topw
 ```
 결과: `layers/NN_이름.png`(앞→뒤), `mix.psd`, `composite.png`, `check.png`(빠짐·넘침·색 차이·PSNR), `sheet.png`, `hidden.png`(초록 = 가려지는 부분, 윤곽 안에 체커보드가 보이면 구멍).
 옵션 전체는 [TOOLS.md](TOOLS.md#mix_layerspy).
+
+원본에는 있는데 어떤 레이어도 덮지 않은 픽셀(`check.png`의 빨강)은 **그대로 비워 둬요.** 생성 레이어의 윤곽선이 원본보다 1~2px 어긋나서 생기는 가는 틈이고, 대부분 캐릭터 바깥 테두리예요 (miku: 2,183px, 87%가 바깥 테두리 2px 안). 예전에는 이 픽셀을 가장 가까운 레이어에 원본 픽셀로 붙였는데, 레이어에 점선 같은 잔선이 남아서 그 기능(`fill_missing`)을 없앴어요 ([자세히](TROUBLESHOOTING.md#레이어에-점선-같은-잔선)).
 
 ## 4. 가려진 부분 생성 (필요한 레이어만) ✋
 See-through에는 트윈테일 칸이 없어서 트윈테일이 back hair에 합쳐져요. miku에서는 back hair를 트윈테일 좌/우와 뒤통수로 나누고, 트윈테일에 가려진 뒤통수를 새로 그렸어요.
@@ -116,10 +117,10 @@ miku에서는 **전부 B, handwear-l만 A** ("01" 글자를 원본 그대로 살
 |---|---|---|
 | 다른 seed나 태그의 더 좋은 모양 쓰기 | `"tag"`를 바꾸거나 `"png"` | headwear 대신 s6 `objects`(고리가 닫힌 모양) |
 | 한 레이어를 사람이 그린 경계로 나누기 | 경계를 빨간 선으로 그린 그림 → 마스크 → 조각 PNG → `"png"` | 헤드셋 고리를 앞/뒤로 ([headwear/](../examples/miku/headwear/)) |
-| 손으로 자른 조각에 원본 픽셀이 덧붙지 않게 | `"no_fill": true` | headwear 6조각 ([전/후](images/no_fill.png)) |
 | 붙어 있는 두 조각 나누기 | `"split": "left"` + `"split_cut": true` | 허벅지에서 붙은 두 다리 |
 | 레이어 순서 정하기 | `"depth"`로 고정 (작을수록 앞) | 사람이 정한 21개 순서 ([확인](images/order_check.png)) |
-| 직접 다듬은 레이어 쓰기 | `"png"` + `"keep_rgb"` + `"no_fill"` (원래 있던 `"split"`은 지우기) | handwear-l ([확인](images/manual_handwear_check.png)) |
+| 직접 다듬은 레이어 쓰기 | `"png"` + `"keep_rgb"` (원래 있던 `"split"`은 지우기) | handwear-l ([확인](images/manual_handwear_check.png)) |
+| 움직일 때 드러날 부분 그려 넣기 | 레이어에 직접 그린 파일 → `"png"` + `"keep_rgb"` | topwear에 목 추가: 정지 합성은 그대로, 고개를 들면 틈을 메움 ([합성](images/topwear_neck_result.png), [머리 움직임](images/neck_tilt_zoom.png)) |
 | 특정 부분 지우기 | 합성 그림에 지울 곳을 빨간 선으로 → 마스크 → `"erase"` | 고리 위·목 옆 잔여물 ([확인](images/erase_check.png)) |
 | 레이어 빼기 | spec에서 지우거나 `"hidden": true` | neck, 오른쪽 스피커 |
 

@@ -104,16 +104,17 @@ seed마다 `<OutRoot><seed>`에 생성하고, `-Tag` 레이어 픽셀 수가 `-M
 | `keep_rgb` | 원본 색을 복사하지 않음 (생성 색 그대로) |
 | `rgb_from: "src"` | 알파는 레이어, 색은 원본 (입 테두리 같은 반투명 가장자리 색 문제) |
 | `despill: "magenta"` | 마젠타 기운이 있는 픽셀을 가장 가까운 깨끗한 색으로 (amodal key 모드 잔여) |
-| `no_fill` | `fill_missing`이 이 레이어에 원본 픽셀을 붙이지 않음 (그 자리는 빈 채로) |
 | `erase` | 마스크 PNG(흰색 = 지움)를 맨 마지막에 적용 |
 | `owner_guard` | `visible_rgb: owner`에서 `false`면 항상 원본 색 (눈처럼 세부가 선뿐인 레이어) |
 | `hidden` | PSD에 넣되 꺼 두고, 합성 검사에서 뺌 |
+
+삭제된 옵션: `fill_missing`(덮이지 않은 원본 픽셀을 가장 가까운 레이어에 붙이기)과 `no_fill`은 레이어에 잔선을 남겨서 2026-11-24에 없앴어요. spec에 남아 있으면 안내만 출력하고 무시해요. 덮이지 않은 원본 픽셀은 비워 둬요 (`check.png`의 빨강, `mix.json`의 `missing_px`).
+`assemble_layers.py`의 같은 방식의 채우기는 그대로예요. 그 도구는 원본에서 잘라 낸 레이어용이라 틈을 자연스럽게 메워요.
 
 ### spec: 전체 옵션
 | 옵션 | 뜻 |
 |---|---|
 | `src` | 원본 (실행 폴더의 `src_img.png`, 1024 페이지) |
-| `fill_missing` | 원본에는 있는데 어떤 레이어도 덮지 않은 픽셀 → 가장 가까운 레이어에 원본 픽셀로 |
 | `visible_rgb: "src"` (+`rgb_thr`) | 앞에서 뒤로, 보이는 픽셀에 원본 색 복사 (A 방식). `rgb_thr`(기본 60)보다 색 차이가 크면 복사 안 함 |
 | `visible_rgb: "owner"` | 원본 픽셀마다 색이 맞는 레이어 하나를 주인으로 정해 그 레이어만 원본 색 (실험, `owner_r`, `line_front`, `bd_guard`, `guard_hand`) |
 | `align: "flow"/"sam2"/"flow+sam2"` | owner 전에 레이어를 원본에 맞춰 옮기기·다시 자르기 (실험) |
