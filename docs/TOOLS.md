@@ -192,8 +192,23 @@ seed마다 `<OutRoot><seed>`에 생성하고, `-Tag` 레이어 픽셀 수가 `-M
 | `--shape` | 없음 | 직접 그린 마스크2 (흰색 = 그려도 됨) |
 | `--strength`, `--line_px` | 0.5, 2 | hull 모드: 다시 그리는 정도, 윤곽선 굵기 |
 | `--margin`, `--steps`, `--seed`, `--key` | 80, 30, 0, `255,0,255` | 자르기 여백, 단계 수, 첫 seed, 배경색 |
+| `--debug` | 꺼짐 | 중간 단계를 원본 크기로 저장 (결과는 켜지 않았을 때와 같음) |
 
 출력: `<out>`, 후보별 `<out>_seed<N>_check.png`, 후보 모음 `candidates.png`
+
+`--debug`를 켜면 `<out>` 옆에 아래 파일이 더 생겨요. 결과가 이상할 때 어느 단계에서 틀렸는지 찾는 데 써요.
+
+| 파일 | 내용 |
+|---|---|
+| `<out>_dbg_01_visible.png` | ① 보이는 부분 (흰색) |
+| `<out>_dbg_02_region.png` | ② 그려도 되는 영역 (흰색) |
+| `<out>_dbg_03_mask2.png` / `_03_mask2_seed<N>.png` | ③ 실제로 그린 모양 = 마스크2 (key는 후보 seed마다) |
+| `<out>_dbg_04_prefill.png` | ④ hull만: SDXL 전에 가까운 색으로 먼저 칠한 상태 |
+| `<out>_dbg.json` | 픽셀 수, 자른 범위, 후보별 색 오차, 고른 seed |
+
+![디버그 시트](images/amodal_debug_sheet.png)
+
+위 예(back_center)에서 hull의 ③은 ②(51,933px) 가운데 2,814px뿐이에요. 보이는 부분의 볼록 껍질이 지금 가장자리 밖으로 거의 나가지 않아서, 오른쪽이 직선으로 잘린 채 남았어요.
 
 ## mask_inpaint.py
 ```powershell

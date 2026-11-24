@@ -95,6 +95,11 @@ See-through에는 트윈테일 칸이 없어서 트윈테일이 back hair에 합
 
    ![후보](../examples/miku/back_center/amodal/candidates.png)
    *key 모드 후보 3개 → seed1 채택 (seed0 분홍 조각, seed2 얼굴 옆모습)*
+
+   결과가 이상하면 `--debug`를 붙여 다시 돌려 보세요. 결과는 그대로이고, 보이는 부분 → 그려도 되는 영역 → 실제로 그린 모양(마스크2) → (hull) 먼저 칠한 상태가 차례로 저장돼요. 예시 출력: [`examples/miku/back_center/amodal_debug_test/`](../examples/miku/back_center/amodal_debug_test/)
+
+   ![디버그 시트](images/amodal_debug_sheet.png)
+   *hull은 마스크2가 그려도 되는 영역의 5%뿐이라 오른쪽이 직선으로 남음*
 3. spec에서 그 레이어를 `"png": "<완성 파일>"`로 바꾸고, 마젠타 잔여는 `"despill": "magenta"`.
 
 ## 5. 레이어별 색 방식 ✋
@@ -120,7 +125,7 @@ miku에서는 **전부 B, handwear-l만 A** ("01" 글자를 원본 그대로 살
 | 붙어 있는 두 조각 나누기 | `"split": "left"` + `"split_cut": true` | 허벅지에서 붙은 두 다리 |
 | 레이어 순서 정하기 | `"depth"`로 고정 (작을수록 앞) | 사람이 정한 21개 순서 ([확인](images/order_check.png)) |
 | 직접 다듬은 레이어 쓰기 | `"png"` + `"keep_rgb"` (원래 있던 `"split"`은 지우기) | handwear-l ([확인](images/manual_handwear_check.png)) |
-| 움직일 때 드러날 부분 그려 넣기 | 레이어에 직접 그린 파일 → `"png"` + `"keep_rgb"` | topwear에 목 추가: 정지 합성은 그대로, 고개를 들면 틈을 메움 ([합성](images/topwear_neck_result.png), [머리 움직임](images/neck_tilt_zoom.png)) |
+| 움직일 때 드러날 부분 그려 넣기 | 레이어에 직접 그린 파일 → `"png"` + `"keep_rgb"` | topwear에 목 추가: 정지 합성은 그대로, 고개를 들면 틈을 메움 ([합성](images/topwear_neck_result.png), [머리 움직임](images/neck_tilt_zoom.png), [머리 ±12° 기울임](images/neck_tilt_preview.png)) |
 | 특정 부분 지우기 | 합성 그림에 지울 곳을 빨간 선으로 → 마스크 → `"erase"` | 고리 위·목 옆 잔여물 ([확인](images/erase_check.png)) |
 | 레이어 빼기 | spec에서 지우거나 `"hidden": true` | neck, 오른쪽 스피커 |
 

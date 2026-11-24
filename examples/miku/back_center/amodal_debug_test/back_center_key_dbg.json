@@ -1,0 +1,42 @@
+{
+ "mode": "key",
+ "target": "<i2l>\\seethrough_test\\text_layers\\miku_oldPC42_backhair\\02_back_center.png",
+ "front": [
+  "<i2l>\\seethrough_test\\text_layers\\miku_oldPC42_backhair\\00_tail_left.png",
+  "<i2l>\\seethrough_test\\text_layers\\miku_oldPC42_backhair\\01_tail_right.png",
+  "<i2l>\\seethrough_test\\mix\\miku_pick1\\layers\\14_tail_left.png",
+  "<i2l>\\seethrough_test\\mix\\miku_pick1\\layers\\16_tail_right.png"
+ ],
+ "shape": null,
+ "search_px": 90,
+ "prompt": "anime style illustration, back of the head, aqua blue hair, smooth hair strands, flat cel shading, black outline",
+ "seed": 0,
+ "steps": 30,
+ "visible_px": 65768,
+ "region_px": 51933,
+ "crop": [
+  199,
+  54,
+  820,
+  675
+ ],
+ "candidates": [
+  {
+   "seed": 0,
+   "drawn_px": 11875,
+   "colour_error": 12.04
+  },
+  {
+   "seed": 1,
+   "drawn_px": 9749,
+   "colour_error": 2.83
+  },
+  {
+   "seed": 2,
+   "drawn_px": 9171,
+   "colour_error": 34.66
+  }
+ ],
+ "picked_seed": 1,
+ "picked_colour_error": 2.83
+}

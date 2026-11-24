@@ -9,8 +9,17 @@
   3. The key colour is removed, so the drawn shape itself decides how far the part continues
      (the "mask 2"). Optional --shape mask limits where it may go (white = allowed).
   4. Only drawn pieces connected to the visible part are kept.
+
+  --debug also saves the in-between masks at full size, next to --out, so a bad result can be traced
+  to the step that caused it (the normal output does not change):
+    <out>_dbg_01_visible.png       visible part (white)
+    <out>_dbg_02_region.png        where it may draw (white)
+    <out>_dbg_03_mask2[_seedN].png drawn shape = mask 2 (key: one per candidate seed)
+    <out>_dbg_04_prefill.png       hull only: area painted with the nearest colours, before SDXL
+    <out>_dbg.json                 pixel counts, crop box, candidate colour errors, picked seed
 """
 import argparse
+import json
 import os
 import sys
 
@@ -28,6 +37,31 @@ def checker(img):
     bg = np.where(((yy // 16 + xx // 16) % 2)[..., None] == 0, 255, 205).astype(np.float32).repeat(3, 2)
     al = img[..., 3:].astype(np.float32) / 255
     return (img[..., :3] * al + bg * (1 - al)).astype(np.uint8)
+
+
+class Debug:
+    """--debug: write in-between images as <out>_dbg_*.png and a summary <out>_dbg.json"""
+
+    def __init__(self, a):
+        self.on = a.debug
+        self.base = os.path.splitext(a.out)[0] + '_dbg'
+        self.info = {'mode': a.mode, 'target': a.target, 'front': a.front, 'shape': a.shape,
+                     'search_px': a.search_px, 'prompt': a.prompt, 'seed': a.seed, 'steps': a.steps}
+
+    def mask(self, name, m):
+        if self.on:
+            Image.fromarray((np.clip(m, 0, 1) * 255).astype(np.uint8)).save(f'{self.base}_{name}.png')
+
+    def rgba(self, name, img):
+        if self.on:
+            Image.fromarray(img).save(f'{self.base}_{name}.png')
+
+    def save(self, **kw):
+        if self.on:
+            self.info.update(kw)
+            with open(self.base + '.json', 'w', encoding='utf-8') as f:
+                json.dump(self.info, f, ensure_ascii=False, indent=1)
+            print(f'[debug] {self.base}_*.png, {self.base}.json')
 
 
 def main():
@@ -49,7 +83,9 @@ def main():
                     help='key: SDXL draws the shape on a magenta background; hull: shape = convex outline (colour-safe)')
     ap.add_argument('--strength', type=float, default=0.5, help='hull mode: how much SDXL repaints the pre-filled area')
     ap.add_argument('--line_px', type=int, default=2, help='hull mode: outline width')
+    ap.add_argument('--debug', action='store_true', help='also save the in-between masks (<out>_dbg_*.png, <out>_dbg.json)')
     a = ap.parse_args()
+    dbg = Debug(a)
 
     tgt = np.asarray(Image.open(a.target).convert('RGBA')).copy()
     H, W = tgt.shape[:2]
@@ -64,8 +100,11 @@ def main():
     if a.shape:
         region &= np.asarray(Image.open(a.shape).convert('L')) > 127
     print(f'[region] visible {int(vis.sum())}px, may draw in {int(region.sum())}px')
+    dbg.mask('01_visible', vis)
+    dbg.mask('02_region', region)
+    dbg.info.update(visible_px=int(vis.sum()), region_px=int(region.sum()))
     if a.mode == 'hull':
-        return hull_mode(a, tgt, vis, region)
+        return hull_mode(a, tgt, vis, region, dbg)
 
     ys, xs = np.nonzero(region)
     cx, cy = (xs.min() + xs.max()) / 2, (ys.min() + ys.max()) / 2
@@ -88,6 +127,7 @@ def main():
     ref_ab = np.median(ref_lab[:, 1:], axis=0)
 
     best = None
+    cands = []
     for s in range(a.seed, a.seed + a.candidates):
         img = generate(crop, mcrop, a.prompt, a.negative, 0.99, a.steps, 7.0, s)
         res = finish(img, tgt, vis, region, key, x0, y0, x1, y1)
@@ -102,14 +142,17 @@ def main():
             err = float(np.median(np.linalg.norm(lab[:, 1:] - ref_ab, axis=1)))  # hue/chroma distance
         print(f'[candidate] seed {s}: drawn {int(gm.sum())}px, colour error {err:.1f}')
         save_check(os.path.splitext(a.out)[0] + f'_seed{s}_check.png', tgt, canvas, gmask, img, out, x0, y0, x1, y1)
+        dbg.mask(f'03_mask2_seed{s}', drawn)
+        cands.append({'seed': s, 'drawn_px': int(gm.sum()), 'colour_error': round(err, 2)})
         if best is None or err < best[0]:
             best = (err, s, out)
     err, s, out = best
     Image.fromarray(out).save(a.out)
     print(f'[done] picked seed {s} (colour error {err:.1f}) -> {a.out}')
+    dbg.save(crop=[x0, y0, x1, y1], candidates=cands, picked_seed=s, picked_colour_error=round(err, 2))
 
 
-def hull_mode(a, tgt, vis, region):
+def hull_mode(a, tgt, vis, region, dbg):
     """mask 2 = the part's own convex outline inside the hidden area: the edges are closed with
     straight-ish lines (like a tail whose side runs on behind the head). The new area is painted
     with the part's nearest colours, refined by SDXL at low strength, and outlined."""
@@ -134,6 +177,9 @@ def hull_mode(a, tgt, vis, region):
     _, (iy, ix) = distance_transform_edt(~src, return_indices=True)
     pre = rgb.copy()
     pre[new] = rgb[iy[new], ix[new]]
+    dbg.mask('03_mask2', new)
+    pf = np.zeros_like(tgt); pf[vis] = tgt[vis]; pf[new, :3] = pre[new]; pf[new, 3] = 255
+    dbg.rgba('04_prefill', pf)
 
     ys, xs = np.nonzero(new)
     cx, cy = (xs.min() + xs.max()) / 2, (ys.min() + ys.max()) / 2
@@ -162,6 +208,8 @@ def hull_mode(a, tgt, vis, region):
     out[line, 3] = 255
     Image.fromarray(out).save(a.out)
     print(f'[done] mask 2 drawn {int(new.sum())}px, outline {int(line.sum())}px -> {a.out}')
+    dbg.save(crop=[x0, y0, x1, y1], mask2_px=int(new.sum()), outline_px=int(line.sum()),
+             strength=a.strength, picked_seed=a.seed)
 
     m2 = np.zeros((H, W, 4), np.uint8); m2[..., 3] = 255
     view = checker(tgt)
