@@ -98,28 +98,35 @@ def main():
     arms_rig = json.load(open(f'{R}/arms/final/arms_rig.json'))
     fy, fx = np.nonzero(L['face'][..., 3] > 16)
     bones = {
-        'body': {'parent': None, 'pivot': [512, 640], 'note': 'root (hips); whole character'},
+        'body': {'parent': None, 'pivot': [512, 640], 'from': 'chosen by hand (rough hip height, centre of the picture)', 'note': 'root (hips); whole character'},
         'head': {'parent': 'body', 'pivot': [round(float(fx[fy > fy.max() - 6].mean()), 1), int(fy.max())],
+                 'from': 'estimated: centre of the lowest 6 rows of the face layer',
                  'note': 'neck (bottom of face). Small tilts only: the neck was not lengthened (user: skip neck work)'},
-        'upperarm_l': {'parent': 'body', 'pivot': [488.3, 480]},
-        'forearm_l': {'parent': 'upperarm_l', 'pivot': arms_rig['l']['elbow_pivot']},
-        'upperarm_r': {'parent': 'body', 'pivot': [565, 480]},
-        'forearm_r': {'parent': 'upperarm_r', 'pivot': arms_rig['r']['elbow_pivot']},
+        'upperarm_l': {'parent': 'body', 'pivot': [488.3, 480], 'from': 'estimated: centre of the top 12 rows of upperarm_l, about 10px down'},
+        'forearm_l': {'parent': 'upperarm_l', 'pivot': arms_rig['l']['elbow_pivot'], 'from': 'elbow line drawn by the person (middle of the line inside the arm)'},
+        'upperarm_r': {'parent': 'body', 'pivot': [565, 480], 'from': 'estimated: centre of the top rows of upperarm_r (also used to raise the arm for the pointing hand)'},
+        'forearm_r': {'parent': 'upperarm_r', 'pivot': arms_rig['r']['elbow_pivot'], 'from': 'elbow line drawn by the person (middle of the line inside the arm)'},
     }
     for s in ('l', 'r'):
         j = json.load(open(f'{R}/legs/legwear-{s}/joint.json'))
-        bones[f'thigh_{s}'] = {'parent': 'body', 'pivot': top_c(L[f'thigh_{s}'])}
-        bones[f'shin_{s}'] = {'parent': f'thigh_{s}', 'pivot': j['pivot']}
+        bones[f'thigh_{s}'] = {'parent': 'body', 'pivot': top_c(L[f'thigh_{s}']), 'from': 'estimated: centre of the top 12 rows of the thigh, 10px down'}
+        bones[f'shin_{s}'] = {'parent': f'thigh_{s}', 'pivot': j['pivot'], 'from': 'knee line drawn by the person (middle of the line inside the leg)'}
     for s in ('left', 'right'):
         c = json.load(open(f'{R}/tails/split3/{s}/chain.json'))
-        bones[f'tail_{s}_root'] = {'parent': 'head', 'pivot': top_c(L[f'tail_{s}_root'], 6)}
-        bones[f'tail_{s}_mid'] = {'parent': f'tail_{s}_root', 'pivot': c['joints'][0]['pivot']}
-        bones[f'tail_{s}_tip'] = {'parent': f'tail_{s}_mid', 'pivot': c['joints'][1]['pivot']}
+        bones[f'tail_{s}_root'] = {'parent': 'head', 'pivot': top_c(L[f'tail_{s}_root'], 6), 'from': 'estimated: centre of the top rows of the tail'}
+        bones[f'tail_{s}_mid'] = {'parent': f'tail_{s}_root', 'pivot': c['joints'][0]['pivot'], 'from': 'V line drawn by the person (middle of its two ends)'}
+        bones[f'tail_{s}_tip'] = {'parent': f'tail_{s}_mid', 'pivot': c['joints'][1]['pivot'], 'from': 'V line drawn by the person (middle of its two ends)'}
 
     # write
+    keep = {}
+    for f in ('README.md',):  # hand-written files in OUT survive a rebuild
+        if os.path.exists(f'{OUT}/{f}'):
+            keep[f] = open(f'{OUT}/{f}', 'rb').read()
     if os.path.isdir(OUT):
         shutil.rmtree(OUT)
     os.makedirs(f'{OUT}/layers')
+    for f, b in keep.items():
+        open(f'{OUT}/{f}', 'wb').write(b)
     names = []
     for i, (n, a, b) in enumerate(layers):
         fn = f'{i:02d}_{n}.png'

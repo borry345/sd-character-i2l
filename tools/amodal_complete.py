@@ -28,7 +28,7 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from mask_inpaint import generate  # noqa: E402
+from mask_inpaint import REPO, generate  # noqa: E402
 
 
 def checker(img):
@@ -46,7 +46,7 @@ class Debug:
         self.on = a.debug
         self.base = os.path.splitext(a.out)[0] + '_dbg'
         self.info = {'mode': a.mode, 'target': a.target, 'front': a.front, 'shape': a.shape,
-                     'search_px': a.search_px, 'prompt': a.prompt, 'seed': a.seed, 'steps': a.steps}
+                     'search_px': a.search_px, 'prompt': a.prompt, 'seed': a.seed, 'steps': a.steps, 'model': a.model or REPO}
 
     def mask(self, name, m):
         if self.on:
@@ -78,6 +78,7 @@ def main():
     ap.add_argument('--margin', type=int, default=80)
     ap.add_argument('--seed', type=int, default=0)
     ap.add_argument('--steps', type=int, default=30)
+    ap.add_argument('--model', default=None, help='SDXL in diffusers format (default: SDXL inpainting 0.1; e.g. an anime SDXL)')
     ap.add_argument('--candidates', type=int, default=3, help='seeds to try; the one whose colours match best wins')
     ap.add_argument('--mode', choices=['key', 'hull'], default='key',
                     help='key: SDXL draws the shape on a magenta background; hull: shape = convex outline (colour-safe)')
@@ -129,7 +130,7 @@ def main():
     best = None
     cands = []
     for s in range(a.seed, a.seed + a.candidates):
-        img = generate(crop, mcrop, a.prompt, a.negative, 0.99, a.steps, 7.0, s)
+        img = generate(crop, mcrop, a.prompt, a.negative, 0.99, a.steps, 7.0, s, a.model or REPO)
         res = finish(img, tgt, vis, region, key, x0, y0, x1, y1)
         out, drawn = res
         gm = drawn > 0.5
@@ -190,7 +191,7 @@ def hull_mode(a, tgt, vis, region, dbg):
     ctx = np.where(full[..., None], pre, 255).astype(np.uint8)
     crop = Image.fromarray(ctx[y0:y1, x0:x1]).resize((1024, 1024), Image.LANCZOS)
     mcrop = Image.fromarray((new[y0:y1, x0:x1] * 255).astype(np.uint8)).resize((1024, 1024), Image.NEAREST)
-    img = generate(crop, mcrop, a.prompt, a.negative, a.strength, a.steps, 7.0, a.seed)
+    img = generate(crop, mcrop, a.prompt, a.negative, a.strength, a.steps, 7.0, a.seed, a.model or REPO)
     gen = np.asarray(Image.fromarray(img).resize((x1 - x0, y1 - y0), Image.LANCZOS))
 
     out = np.zeros_like(tgt)

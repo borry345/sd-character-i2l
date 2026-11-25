@@ -78,10 +78,12 @@ seed 10개와 중간 합치기 결과는 용량이 커서 넣지 않았어요. �
 | [24yearsold/seethroughv0.0.2_layerdiff3d_nf4](https://huggingface.co/24yearsold/seethroughv0.0.2_layerdiff3d_nf4) | 레이어 생성 | openrail++ |
 | [24yearsold/seethroughv0.0.1_marigold_nf4](https://huggingface.co/24yearsold/seethroughv0.0.1_marigold_nf4) | 깊이 | openrail++ |
 | [frankjoshua/juggernautXL_version6Rundiffusion](https://huggingface.co/frankjoshua/juggernautXL_version6Rundiffusion) | See-through가 설정 파일만 참조 (가중치는 안 받음) | 모델 카드 참고 |
-| [diffusers/stable-diffusion-xl-1.0-inpainting-0.1](https://huggingface.co/diffusers/stable-diffusion-xl-1.0-inpainting-0.1) | amodal_complete, mask_inpaint | openrail++ |
+| [diffusers/stable-diffusion-xl-1.0-inpainting-0.1](https://huggingface.co/diffusers/stable-diffusion-xl-1.0-inpainting-0.1) | amodal_complete, mask_inpaint (`--model`로 바꿀 수 있음) | openrail++ |
 | [IDEA-Research/grounding-dino-base](https://huggingface.co/IDEA-Research/grounding-dino-base) | text_layers (글 → 상자) | Apache-2.0 |
 | [facebook/sam2.1-hiera-large](https://huggingface.co/facebook/sam2.1-hiera-large) | text_layers (상자 → 마스크) | Apache-2.0 |
 | [dreMaz/AnimeMangaInpainting](https://huggingface.co/dreMaz/AnimeMangaInpainting) (LaMa) | text_layers (틈 메우기) | 모델 카드 참고 |
+
+**SDXL 인페인팅 모델을 고른 근거:** 가려진 부분 그리기(key 모드)를 애니메이션 SDXL 3종(Animagine XL 4.0, NoobAI-XL 1.1, Illustrious XL v0.1)과 같은 설정·seed 5개로 비교했어요. 색 오차 중앙값이 가장 낮았고(기본 8.1 / 10.1 / 8.9 / 33.2), 가려진 모양도 가장 많이 이어 그렸어요. 애니메이션 모델은 인페인팅 전용이 아니라서 평균 0.4~0.6배만 그렸어요. 자세한 결과: [TROUBLESHOOTING](docs/TROUBLESHOOTING.md#4-다시-그리기-sdxl)
 
 ## 라이선스
 - 이 저장소의 코드와 문서: [Apache License 2.0](LICENSE)

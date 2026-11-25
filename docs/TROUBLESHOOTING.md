@@ -16,7 +16,7 @@
 | 증상 | 원인 | 해결 |
 |---|---|---|
 | `conda create`에서 `SSL module is not available` | conda를 PATH에 넣지 않고 실행 | 그 창에서만 anaconda `Library\bin` 등을 PATH에 추가 ([INSTALL 2단계](INSTALL.md#2-파이썬-환경-python-312)) |
-| 모델 받는 중 `WinError 1314` (심볼릭 링크 권한) | Hugging Face가 여러 파일을 동시에 받으면서 심볼릭 링크 지원 여부를 동시에 검사하다 꼬임 | 다운로드 전에 `huggingface_hub.file_download.are_symlinks_supported()`를 한 번 먼저 부르고 받기 |
+| 모델 받는 중 `WinError 1314` (심볼릭 링크 권한) | Hugging Face가 여러 파일을 동시에 받으면서 심볼릭 링크 지원 여부를 동시에 검사하다 꼬임 | 다운로드 전에 `huggingface_hub.file_download.are_symlinks_supported()`를 한 번 먼저 부르고 받기. 그래도 나면(검사한 캐시 경로 문자열이 `/`·`\`로 달라 검사 결과를 못 씀) `file_download.are_symlinks_supported = lambda *a, **k: False`로 고정하고 받기 |
 | SAM2 설치가 CUDA 확장을 빌드하려다 실패하거나 torch를 바꿔 버림 | SAM2 기본 설치가 빌드·의존성 설치를 함 | `SAM2_BUILD_CUDA=0` + `--no-deps --no-build-isolation`, 커밋 c2ec8e1 |
 | See-through가 `assets`를 못 찾음 | 저장소가 리눅스 심볼릭 링크(`assets → common/assets`)를 씀 | Windows에서는 `mklink /J assets common\assets` |
 | `run_seethrough.ps1`이 python을 못 찾음 | conda 환경은 `env\python.exe`, venv는 `env\Scripts\python.exe` | 지금은 두 곳을 다 찾아요. 그래도 안 되면 `env` 위치와 `I2L_ROOT` 확인 |
@@ -59,6 +59,7 @@ PC A(RTX 3070 8GB, RAM 16GB)에서 예제 한 장을 돌리기까지의 시도�
 | `key` 모드에서 분홍·노란 머리카락, 보라 테두리 | 마젠타 배경색이 번짐 | `--candidates`로 여러 개 그려 색이 맞는 것 고르기, 남은 테두리는 mix의 `despill: magenta` |
 | `hull` 모드가 한쪽을 직선으로 자름 | 볼록 껍질 모양의 한계. `--debug`로 보면 마스크2가 그려도 되는 영역의 5%(2,814 / 51,933px)뿐 | `key` 모드 또는 `--shape`로 마스크2를 직접 그려 주기 |
 | `amodal_complete.py` 결과가 이상한데 원인을 모름 | 중간 마스크가 남지 않음 | `--debug`로 ① 보이는 부분 ② 그려도 되는 영역 ③ 마스크2 ④ 먼저 칠한 상태를 저장해 차례로 보기 |
+| key 모드 색 흔들림을 애니메이션 SDXL로 줄일 수 있을까 | 기본 모델은 사진·일반 그림 위주 | **안 줄었어요.** miku 뒤통수를 같은 설정·seed 5개로 비교 ([시트](images/anime_sdxl_compare.png)): 색 오차 중앙값 기본 8.1, Animagine XL 4.0 10.1, NoobAI-XL 1.1 8.9, Illustrious XL v0.1 33.2. 애니메이션 모델은 인페인팅 전용이 아니라 새로 그리는 양이 평균 0.4~0.6배 (1.4k~8.6k px, 기본 5.4k~11.9k px)이고 앞 레이어 자리의 직선이 남음. Animagine은 엉뚱한 것(얼굴·귀)을 한 번도 안 그렸지만 모양이 덜 이어짐 → 기본 모델 유지, `--model`로 바꿀 수는 있음 |
 | `key` 후보 중 얼굴 옆모습이 그려짐 | 프롬프트·주변 문맥이 얼굴을 떠올리게 함 | 후보 중에서 고르기 (negative에 face 포함) |
 
 ## 5. 합치기 (`mix_layers.py`)

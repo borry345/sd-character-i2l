@@ -20,15 +20,21 @@ import torch
 from PIL import Image
 
 REPO = 'diffusers/stable-diffusion-xl-1.0-inpainting-0.1'
+# --model: any SDXL in diffusers format (Hugging Face id or folder), e.g. an anime SDXL. A normal (not inpainting)
+# SDXL also works: the inpaint pipeline keeps the unmasked latents and redraws only the mask.
+
+
+def _variant(model):
+    return 'fp16' if model == REPO else None  # the default repo has *.fp16.safetensors; most others are fp16 files without the variant name
 
 
 @torch.no_grad()
-def encode(prompts):
+def encode(prompts, model=REPO):
     from transformers import CLIPTextModel, CLIPTextModelWithProjection, CLIPTokenizer
-    t1 = CLIPTokenizer.from_pretrained(REPO, subfolder='tokenizer')
-    t2 = CLIPTokenizer.from_pretrained(REPO, subfolder='tokenizer_2')
-    e1 = CLIPTextModel.from_pretrained(REPO, subfolder='text_encoder', variant='fp16', torch_dtype=torch.float16).to('cuda')
-    e2 = CLIPTextModelWithProjection.from_pretrained(REPO, subfolder='text_encoder_2', variant='fp16', torch_dtype=torch.float16).to('cuda')
+    t1 = CLIPTokenizer.from_pretrained(model, subfolder='tokenizer')
+    t2 = CLIPTokenizer.from_pretrained(model, subfolder='tokenizer_2')
+    e1 = CLIPTextModel.from_pretrained(model, subfolder='text_encoder', variant=_variant(model), torch_dtype=torch.float16).to('cuda')
+    e2 = CLIPTextModelWithProjection.from_pretrained(model, subfolder='text_encoder_2', variant=_variant(model), torch_dtype=torch.float16).to('cuda')
     out = []
     for p in prompts:
         i1 = t1(p, padding='max_length', max_length=77, truncation=True, return_tensors='pt').input_ids.to('cuda')
@@ -41,14 +47,14 @@ def encode(prompts):
     return out
 
 
-def generate(crop, mcrop, prompt, negative, strength=0.99, steps=30, guidance=7.0, seed=0):
+def generate(crop, mcrop, prompt, negative, strength=0.99, steps=30, guidance=7.0, seed=0, model=REPO):
     """SDXL inpaint of a 1024x1024 PIL crop + PIL mask (white = redraw). Returns uint8 HxWx3.
     Runs text encoders, UNet and VAE one after another so it fits in 8 GB."""
-    (pe, pp), (ne, np_) = encode([prompt, negative])
+    (pe, pp), (ne, np_) = encode([prompt, negative], model)
     from diffusers import StableDiffusionXLInpaintPipeline
     pipe = StableDiffusionXLInpaintPipeline.from_pretrained(
-        REPO, text_encoder=None, text_encoder_2=None, tokenizer=None, tokenizer_2=None,
-        variant='fp16', torch_dtype=torch.float16).to('cuda')
+        model, text_encoder=None, text_encoder_2=None, tokenizer=None, tokenizer_2=None,
+        variant=_variant(model), torch_dtype=torch.float16).to('cuda')
     pipe.set_progress_bar_config(disable=True)
     g = torch.Generator('cuda').manual_seed(seed)
     lat = pipe(prompt_embeds=pe, pooled_prompt_embeds=pp, negative_prompt_embeds=ne, negative_pooled_prompt_embeds=np_,
@@ -77,6 +83,7 @@ def main():
     ap.add_argument('--steps', type=int, default=30)
     ap.add_argument('--strength', type=float, default=0.99)
     ap.add_argument('--guidance', type=float, default=7.0)
+    ap.add_argument('--model', default=REPO, help='SDXL in diffusers format (default: SDXL inpainting 0.1)')
     ap.add_argument('--seed', type=int, default=0)
     ap.add_argument('--margin', type=int, default=96, help='context around the mask (px)')
     ap.add_argument('--bg', default='255,255,255', help='colour behind transparent pixels')
@@ -114,7 +121,7 @@ def main():
     mcrop = Image.fromarray((mask[y0:y1, x0:x1] * 255).astype(np.uint8)).resize((1024, 1024), Image.NEAREST)
     print(f'[crop] ({x0},{y0})-({x1},{y1}) side {x1 - x0}px -> 1024, mask {int(mask.sum())}px')
 
-    img = generate(crop, mcrop, a.prompt, a.negative, a.strength, a.steps, a.guidance, a.seed)
+    img = generate(crop, mcrop, a.prompt, a.negative, a.strength, a.steps, a.guidance, a.seed, a.model)
     gen =np.asarray(Image.fromarray(img).resize((x1 - x0, y1 - y0), Image.LANCZOS))
     soft = mask.astype(np.float32)
     if a.feather > 0:

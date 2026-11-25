@@ -49,7 +49,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass   # 지금 창에서�
 | `-HeadGrow` | 0 | 머리 단계를 다시 돌릴 수 있는 횟수 ([head_grow.py](#head_growpy)) |
 | `-HeadBox` | 없음 | `x0,y0,x1,y1`: 머리 상자를 직접 정함 (1024 화면 = `src_img.png` 좌표). 자동으로 넓히지 않고, `-HeadNeed`가 나올 때까지 머리 단계만 난수를 바꿔 다시 그림 |
 | `-HeadNeed` | 없음 | `-HeadBox`와 함께: 꼭 나와야 할 부위 `태그:최소픽셀,...` (예 `headwear:8000,face:20000`). 그만큼 있고 상자 테두리에 안 닿아야 통과 |
-| `-HeadTries` | 5 | `-HeadBox`와 함께: 머리 단계를 그리는 최대 횟수 |
+| `-HeadTries` | 5 | `-HeadBox`와 함께: 머리 단계를 그리는 최대 횟수 (5는 따로 근거 없이 정한 값. 한 번에 1~2분 늘어남) |
 
 출력: `<OutDir>\<이름>.psd`, `<이름>_depth.psd`, `<OutDir>\<이름>\` 아래 태그별 `<태그>.png`·`<태그>_depth.png`·`src_img.png`, `run.log`, `gpu_mem.csv`, `summary.txt`(`EXIT`, `SECONDS`, `PEAK_GPU_MB`, `MIN_FREE_RAM_MB` …)
 
@@ -83,7 +83,8 @@ See-through `run_layerdiff`를 대신하는 함수예요 (See-through 코드를 
 ### 사람이 정한 상자 (`-HeadBox`)
 자동으로 넓히면 상자가 1~2px만 달라도 부위가 생기거나 사라져요. seed3은 넓힌 1회차에서 헤드셋이 사라졌는데, 테두리에 닿는 부위가 없으니 "다 들어왔다"고 보고 멈췄어요. 그래서 상자는 사람이 정하고, 필요한 부위가 나올 때까지 머리 단계만 다시 그리는 방법을 더했어요. 몸 단계는 한 번만 돌아서 seed를 통째로 다시 돌리는 `seed_search.ps1`보다 빨라요.
 ```powershell
-& toolsun_seethrough.ps1 -Src <그림.png> -OutDir <출력> -Extra @('--no_group_offload','--tblr_split','--seed','3') `
+& tools
+un_seethrough.ps1 -Src <그림.png> -OutDir <출력> -Extra @('--no_group_offload','--tblr_split','--seed','3') `
   -HeadBox '326,116,691,504' -HeadNeed 'headwear:8000,face:20000' -HeadTries 5
 ```
 ![사용자 상자](images/head_box_seed3.png)
@@ -222,6 +223,7 @@ seed마다 `<OutRoot><seed>`에 생성하고, `-Tag` 레이어 픽셀 수가 `-M
 | `--strength`, `--line_px` | 0.5, 2 | hull 모드: 다시 그리는 정도, 윤곽선 굵기 |
 | `--margin`, `--steps`, `--seed`, `--key` | 80, 30, 0, `255,0,255` | 자르기 여백, 단계 수, 첫 seed, 배경색 |
 | `--debug` | 꺼짐 | 중간 단계를 원본 크기로 저장 (결과는 켜지 않았을 때와 같음) |
+| `--model` | SDXL inpainting 0.1 | 다른 SDXL (`mask_inpaint.py`와 같음). 애니메이션 SDXL 3종을 비교했지만 기본 모델이 나았어요 ([TROUBLESHOOTING](TROUBLESHOOTING.md#4-다시-그리기-sdxl)) |
 
 출력: `<out>`, 후보별 `<out>_seed<N>_check.png`, 후보 모음 `candidates.png`
 
@@ -252,6 +254,7 @@ SDXL 인페인팅으로 마스크(흰색)만 다시 그려요. 8GB에 맞추려�
 | `--feather` | 6 | 경계 부드럽게 |
 | `--bg` | `255,255,255` | 투명 픽셀 뒤 색 |
 | `--steps`, `--guidance`, `--seed` | 30, 7.0, 0 | |
+| `--model` | SDXL inpainting 0.1 | diffusers 형식의 다른 SDXL (Hugging Face id 또는 폴더). 인페인팅 전용이 아닌 SDXL도 돌아가요 |
 
 ## assemble_layers.py
 ```powershell
@@ -278,7 +281,7 @@ SDXL 인페인팅으로 마스크(흰색)만 다시 그려요. 8GB에 맞추려�
 | `--names a,b` | `upper,lower` | 위 조각, 아래 조각 이름 |
 | `--front` | `second` | 앞에 그릴 조각 (기본: 아래 조각 = 종아리·하박) |
 | `--cap` | 폭/2 | 관절 캡 반지름 |
-| `--line_px` | 4 | 관절 외곽선 두께 |
+| `--line_px` | 4 | 관절 외곽선 두께 (miku 원본 외곽선이 4~5px로 보여서) |
 | `--pivot x,y` | 선 가운데 | 회전 중심을 직접 지정 (소매와 맨팔이 같은 팔꿈치를 쓰게) |
 
 `--cap 0`이면 캡·관절 외곽선 없이 선에서 그냥 잘라요 (손처럼 돌리지 않고 갈아 끼우는 부분).
@@ -323,8 +326,8 @@ SDXL 인페인팅으로 마스크(흰색)만 다시 그려요. 8GB에 맞추려�
 | `--lined` | | 같은 크기 사본에 빨간 선을 그은 그림 (선 하나 = 자르는 곳 하나) |
 | `--names` | `piece0,...` | 위에서 아래 순서 이름 |
 | `--front` | `top` | 위 조각이 앞 (뿌리 > 중간 > 끝). `bottom`이면 반대 |
-| `--overlap` | 14 | 뒤 조각이 선 너머로 더 갖는 원본 픽셀 (굽힐 때 바깥쪽 틈 메움, 곧게 두면 가려짐) |
-| `--feather` | 8 | 앞 조각이 선 너머로 서서히 사라지는 폭. 굽힐 때 이음매·외곽선 턱이 부드러워짐 (0 = 딱 자름) |
+| `--overlap` | 14 | 뒤 조각이 선 너머로 더 갖는 원본 픽셀 (굽힐 때 바깥쪽 틈 메움, 곧게 두면 가려짐). 14는 miku 트윈테일을 관절마다 ±20°까지 굽혀도 틈이 안 보인 값 |
+| `--feather` | 8 | 앞 조각이 선 너머로 서서히 사라지는 폭. 굽힐 때 이음매·외곽선 턱이 부드러워짐 (0 = 딱 자름). 8은 아래 비교 그림(0과 8)으로 정한 값이고 다른 값은 비교하지 않았어요 |
 
 관절 기준점은 선 양 끝(외곽선과 만나는 점)의 가운데예요. 출력: 조각 PNG, `chain.json`(기준점·순서), `chain_check.png`(곧게, ±10°·±20°씩).
 

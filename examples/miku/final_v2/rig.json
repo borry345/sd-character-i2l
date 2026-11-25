@@ -239,6 +239,7 @@
     512,
     640
    ],
+   "from": "chosen by hand (rough hip height, centre of the picture)",
    "note": "root (hips); whole character"
   },
   "head": {
@@ -247,6 +248,7 @@
     548.8,
     457
    ],
+   "from": "estimated: centre of the lowest 6 rows of the face layer",
    "note": "neck (bottom of face). Small tilts only: the neck was not lengthened (user: skip neck work)"
   },
   "upperarm_l": {
@@ -254,98 +256,112 @@
    "pivot": [
     488.3,
     480
-   ]
+   ],
+   "from": "estimated: centre of the top 12 rows of upperarm_l, about 10px down"
   },
   "forearm_l": {
    "parent": "upperarm_l",
    "pivot": [
     466.1,
     554.8
-   ]
+   ],
+   "from": "elbow line drawn by the person (middle of the line inside the arm)"
   },
   "upperarm_r": {
    "parent": "body",
    "pivot": [
     565,
     480
-   ]
+   ],
+   "from": "estimated: centre of the top rows of upperarm_r (also used to raise the arm for the pointing hand)"
   },
   "forearm_r": {
    "parent": "upperarm_r",
    "pivot": [
     601.7,
     558.8
-   ]
+   ],
+   "from": "elbow line drawn by the person (middle of the line inside the arm)"
   },
   "thigh_l": {
    "parent": "body",
    "pivot": [
     497.4,
     620
-   ]
+   ],
+   "from": "estimated: centre of the top 12 rows of the thigh, 10px down"
   },
   "shin_l": {
    "parent": "thigh_l",
    "pivot": [
     484.8,
     721.9
-   ]
+   ],
+   "from": "knee line drawn by the person (middle of the line inside the leg)"
   },
   "thigh_r": {
    "parent": "body",
    "pivot": [
     584.3,
     621
-   ]
+   ],
+   "from": "estimated: centre of the top 12 rows of the thigh, 10px down"
   },
   "shin_r": {
    "parent": "thigh_r",
    "pivot": [
     605.3,
     732.1
-   ]
+   ],
+   "from": "knee line drawn by the person (middle of the line inside the leg)"
   },
   "tail_left_root": {
    "parent": "head",
    "pivot": [
     370.4,
     186
-   ]
+   ],
+   "from": "estimated: centre of the top rows of the tail"
   },
   "tail_left_mid": {
    "parent": "tail_left_root",
    "pivot": [
     333.0,
     310.8
-   ]
+   ],
+   "from": "V line drawn by the person (middle of its two ends)"
   },
   "tail_left_tip": {
    "parent": "tail_left_mid",
    "pivot": [
     303.0,
     431.0
-   ]
+   ],
+   "from": "V line drawn by the person (middle of its two ends)"
   },
   "tail_right_root": {
    "parent": "head",
    "pivot": [
     669.5,
     191
-   ]
+   ],
+   "from": "estimated: centre of the top rows of the tail"
   },
   "tail_right_mid": {
    "parent": "tail_right_root",
    "pivot": [
     683.0,
     310.5
-   ]
+   ],
+   "from": "V line drawn by the person (middle of its two ends)"
   },
   "tail_right_tip": {
    "parent": "tail_right_mid",
    "pivot": [
     709.5,
     459.5
-   ]
+   ],
+   "from": "V line drawn by the person (middle of its two ends)"
   }
  },
  "slots": {
