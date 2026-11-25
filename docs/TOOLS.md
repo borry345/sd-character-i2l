@@ -7,7 +7,7 @@
 |---|---|---|---|
 | 생성 | [run_seethrough.ps1](#run_seethroughps1) | See-through 한 장 실행 + 시간·메모리 기록 | ✔ |
 | | [run_patched.py](#run_patchedpy) | See-through 스크립트를 실행 중에만 고쳐서 실행 (`run_seethrough.ps1`이 부름) | ✔ |
-| | [head_grow.py](#head_growpy) | 머리 자르기 상자를 넓혀 가며 머리 단계 다시 돌리기 (`-HeadGrow`) | ✔ |
+| | [head_grow.py](#head_growpy) | 머리 자르기 상자를 넓혀 가며 머리 단계 다시 돌리기 (`-HeadGrow`), 또는 사람이 정한 상자로 필요한 부위가 나올 때까지 다시 그리기 (`-HeadBox`) | ✔ |
 | | [seed_search.ps1](#seed_searchps1) | 특정 부위가 나올 때까지 seed 돌리기 | ✔ |
 | 검토 | [review_seethrough.py](#review_seethroughpy) | 결과 하나의 단계별 검토 이미지 | |
 | | [compare_seeds.py](#compare_seedspy) | 여러 seed의 같은 태그를 나란히 | |
@@ -47,6 +47,9 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass   # 지금 창에서�
 | `-Script` | `inference/scripts/inference_psd_quantized.py` | 실행할 See-through 스크립트 |
 | `-Extra` | 없음 | See-through에 그대로 넘기는 인자 (`--no_group_offload`, `--tblr_split`, `--seed N` 등) |
 | `-HeadGrow` | 0 | 머리 단계를 다시 돌릴 수 있는 횟수 ([head_grow.py](#head_growpy)) |
+| `-HeadBox` | 없음 | `x0,y0,x1,y1`: 머리 상자를 직접 정함 (1024 화면 = `src_img.png` 좌표). 자동으로 넓히지 않고, `-HeadNeed`가 나올 때까지 머리 단계만 난수를 바꿔 다시 그림 |
+| `-HeadNeed` | 없음 | `-HeadBox`와 함께: 꼭 나와야 할 부위 `태그:최소픽셀,...` (예 `headwear:8000,face:20000`). 그만큼 있고 상자 테두리에 안 닿아야 통과 |
+| `-HeadTries` | 5 | `-HeadBox`와 함께: 머리 단계를 그리는 최대 횟수 |
 
 출력: `<OutDir>\<이름>.psd`, `<이름>_depth.psd`, `<OutDir>\<이름>\` 아래 태그별 `<태그>.png`·`<태그>_depth.png`·`src_img.png`, `run.log`, `gpu_mem.csv`, `summary.txt`(`EXIT`, `SECONDS`, `PEAK_GPU_MB`, `MIN_FREE_RAM_MB` …)
 
@@ -68,8 +71,27 @@ See-through `run_layerdiff`를 대신하는 함수예요 (See-through 코드를 
 | `HEAD_GROW_STEP` | 0.25 | 한 번에 넓히는 양 (머리 너비·높이 대비) |
 | `HEAD_GROW_MAX` | 1.0 | 한쪽 여백 최대값 (머리 크기 대비) |
 | `HEAD_GROW_MINPX` | 8 | 테두리 2px 안에 이만큼 있으면 "닿음" |
+| `HEAD_BOX`, `HEAD_NEED`, `HEAD_TRIES` | | `-HeadBox`, `-HeadNeed`, `-HeadTries`가 설정. 시도마다 난수 seed, seed+1000, seed+2000… 통과한 시도가 없으면 점수(필요 부위 픽셀 비율, 테두리에 닿으면 감점)가 가장 높은 시도. **모든 부위를 한 시도에서** 가져와요 (난수가 다르면 부위끼리 안 맞음) |
+| `HEAD_GROW_KEEP` | `max` | 태그마다 어느 회차를 쓸지. `max`: 마지막 회차를 쓰되, 그 태그가 마지막 회차에서 가장 컸던 회차의 `HEAD_GROW_KEEP_RATIO`배 아래로 줄었으면 가장 컸던 회차. `last`: 모두 마지막 회차 (2026-11-26 이전 동작) |
+| `HEAD_GROW_KEEP_RATIO` | 0.5 | 위 기준 비율. 눈썹 494→428px 같은 작은 차이로 눈 부위가 회차별로 섞이지 않게 |
 
-추가 출력: `head_grow\src_head_<회차>.png`, `head_grow\<회차>_<태그>.png`, `head_grow.json`(회차별 상자, 닿은 쪽, 넓힌 쪽)
+추가 출력: `head_grow\src_head_<회차>.png`, `head_grow\<회차>_<태그>.png`(상자 안 결과), `head_grow\pass<회차>\<태그>.png`(1024 화면에 놓은 회차별 결과, 다른 회차를 골라 `"png"`로 쓸 때), `head_grow.json`(회차별 상자, 닿은 쪽, 넓힌 쪽, `tag_pass` = 태그마다 쓴 회차, `tag_px` = 회차별 픽셀 수)
+
+![회차 고르기](images/head_grow_keep_max.png)
+*저장된 seed 10개에 적용: 바뀌는 건 seed2(귀)·seed3(헤드셋)·seed8(얼굴·귀)뿐. 주황 = 0회차 상자, 빨강 = 1회차 상자, 굵은 선 = 그 회차 결과를 씀(위 글에 어느 태그인지). seed3 헤드셋은 0회차 결과라 주황 상자 위·왼쪽 경계에서 잘려 있어요.*
+
+### 사람이 정한 상자 (`-HeadBox`)
+자동으로 넓히면 상자가 1~2px만 달라도 부위가 생기거나 사라져요. seed3은 넓힌 1회차에서 헤드셋이 사라졌는데, 테두리에 닿는 부위가 없으니 "다 들어왔다"고 보고 멈췄어요. 그래서 상자는 사람이 정하고, 필요한 부위가 나올 때까지 머리 단계만 다시 그리는 방법을 더했어요. 몸 단계는 한 번만 돌아서 seed를 통째로 다시 돌리는 `seed_search.ps1`보다 빨라요.
+```powershell
+& toolsun_seethrough.ps1 -Src <그림.png> -OutDir <출력> -Extra @('--no_group_offload','--tblr_split','--seed','3') `
+  -HeadBox '326,116,691,504' -HeadNeed 'headwear:8000,face:20000' -HeadTries 5
+```
+![사용자 상자](images/head_box_seed3.png)
+*왼쪽: 자동으로 넓히기 (헤드셋은 0회차 것이라 주황 상자 경계에서 잘림). 오른쪽: `-HeadBox 326,116,691,504 -HeadNeed headwear:8000` → 첫 시도에 통과, 헤드셋 24,097px이 잘리지 않음 (337초, 넓히기는 486초)*
+
+![다시 그리기](images/head_box_retry.png)
+*일부러 헤드셋이 잘리는 작은 상자로 3번: 0번째·2번째는 헤드셋 없음, 1번째는 헤드셋이 테두리에 닿음 → 통과 없음 → 점수가 가장 높은 1번째를 씀. 1번째는 얼굴(face)이 비어서, 얼굴도 `-HeadNeed`에 넣는 게 좋아요.*
+
 
 ## seed_search.ps1
 ```powershell

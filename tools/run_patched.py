@@ -41,13 +41,13 @@ def encode_cropped_prompt_77tokens(self, prompt):
 
 m.KDiffusionStableDiffusionXLPipeline.encode_cropped_prompt_77tokens = encode_cropped_prompt_77tokens
 print('[run_patched] encode_cropped_prompt_77tokens -> ids on cuda', flush=True)
-if int(os.environ.get('HEAD_GROW_ITERS', '0')) > 0 and 'def run_layerdiff(' in open(script, encoding='utf-8').read():
+if (int(os.environ.get('HEAD_GROW_ITERS', '0')) > 0 or os.environ.get('HEAD_BOX')) and 'def run_layerdiff(' in open(script, encoding='utf-8').read():
     # growing head crop: swap run_layerdiff for tools/head_grow.py's version (repo file untouched)
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     src = open(script, encoding='utf-8').read()
     src = src.replace('def run_layerdiff(', 'def _orig_run_layerdiff(', 1)
     src = src.replace("if __name__ == '__main__':", "from head_grow import run_layerdiff\n\nif __name__ == '__main__':", 1)
-    print(f"[run_patched] head_grow on: HEAD_GROW_ITERS={os.environ['HEAD_GROW_ITERS']}", flush=True)
+    print(f"[run_patched] head_grow on: HEAD_GROW_ITERS={os.environ.get('HEAD_GROW_ITERS')} HEAD_BOX={os.environ.get('HEAD_BOX', '')} HEAD_NEED={os.environ.get('HEAD_NEED', '')}", flush=True)
     g = {'__name__': '__main__', '__file__': script}
     exec(compile(src, script, 'exec'), g)
 else:

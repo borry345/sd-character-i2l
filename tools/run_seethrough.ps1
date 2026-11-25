@@ -4,7 +4,10 @@
   [int]$Resolution = 1024,
   [string]$Script = 'inference/scripts/inference_psd_quantized.py',
   [string[]]$Extra = @(),
-  [int]$HeadGrow = 0   # extra head passes with a growing crop (tools/head_grow.py), 0 = original
+  [int]$HeadGrow = 0,  # extra head passes with a growing crop (tools/head_grow.py), 0 = original
+  [string]$HeadBox = '',  # x0,y0,x1,y1 head crop on the 1024 page (src_img.png); redraw the head pass with new noise
+  [string]$HeadNeed = '', # with -HeadBox: tags that must come out, e.g. 'headwear:8000,ears:500' (tag:min px)
+  [int]$HeadTries = 5     # with -HeadBox: max head passes
 )
 $ErrorActionPreference = 'Continue'
 $root = if ($env:I2L_ROOT) { $env:I2L_ROOT } else { Split-Path $PSScriptRoot -Parent }  # i2l folder (tools/..)
@@ -14,6 +17,9 @@ $env:HF_HOME = Join-Path $root 'hf_cache'
 $env:PYTHONIOENCODING = 'utf-8'
 $env:HF_HUB_DISABLE_SYMLINKS_WARNING = '1'
 $env:HEAD_GROW_ITERS = "$HeadGrow"
+$env:HEAD_BOX = $HeadBox
+$env:HEAD_NEED = $HeadNeed
+$env:HEAD_TRIES = "$HeadTries"
 $base = [int](nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits)
 New-Item -ItemType Directory -Force $OutDir | Out-Null
 $gpuLog = Join-Path $OutDir 'gpu_mem.csv'
@@ -39,7 +45,7 @@ Stop-Job $sampler; Remove-Job $sampler
 
 $peak = (Get-Content $gpuLog | ForEach-Object { [int](($_ -split ',')[1].Trim()) } | Measure-Object -Maximum).Maximum
 $minFree = (Get-Content $gpuLog | ForEach-Object { [int](($_ -split ',')[2].Trim()) } | Measure-Object -Minimum).Minimum
-$summary = "MIN_FREE_RAM_MB=$minFree  " +"EXIT=$code  SECONDS=$([math]::Round($sw.Elapsed.TotalSeconds))  PEAK_GPU_MB=$peak  BASELINE_MB=$base  PEAK_MINUS_BASE_MB=$($peak - $base)  ARGS=$Script $Resolution $($Extra -join ' ') HEAD_GROW=$HeadGrow"
+$summary = "MIN_FREE_RAM_MB=$minFree  " +"EXIT=$code  SECONDS=$([math]::Round($sw.Elapsed.TotalSeconds))  PEAK_GPU_MB=$peak  BASELINE_MB=$base  PEAK_MINUS_BASE_MB=$($peak - $base)  ARGS=$Script $Resolution $($Extra -join ' ') HEAD_GROW=$HeadGrow HEAD_BOX=$HeadBox HEAD_NEED=$HeadNeed"
 $summary | Out-File -Encoding utf8 (Join-Path $OutDir 'summary.txt')
 $summary
 Get-Content $runLog -Tail 25

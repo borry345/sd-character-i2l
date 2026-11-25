@@ -43,7 +43,9 @@ See-through는 두 단계로 그려요.
 ![seed0 머리 상자](images/head_grow_seed0_step22.png)
 *seed0: 1회차(주황)에 왼쪽·위가 닿아 넓힘 → 2회차(빨강)에는 닿은 곳 없음. 회차 기록: [head_grow_seed0.json](images/head_grow_seed0.json)*
 
-주의: 상자를 넓히면 머리 부위 전체가 다시 그려져서 **오히려 나빠질 때도 있어요** (seed3은 넓힌 뒤 헤드셋이 사라짐).
+주의: 상자를 넓히면 머리 부위 전체가 다시 그려져서 **오히려 나빠질 때도 있어요** (seed3은 넓힌 뒤 헤드셋이 사라짐). 그래서 어떤 태그가 마지막 회차에서 절반 아래로 줄면 가장 컸던 회차의 것을 써요 (`HEAD_GROW_KEEP`, [TOOLS](TOOLS.md#head_growpy)). 회차별 결과는 `head_grow/pass<회차>/`에 있어요.
+
+넓혀도 원하는 부위가 안 나오면, 상자를 직접 정하고 그 부위가 나올 때까지 머리 단계만 다시 그려요: `-HeadBox x0,y0,x1,y1 -HeadNeed headwear:8000,face:20000` (좌표는 `src_img.png` 기준, [TOOLS](TOOLS.md#사람이-정한-상자--headbox)).
 
 ## 2. seed 비교 ✋
 ```powershell
