@@ -15,7 +15,7 @@
   - l : default, fist, open, mic, peace, relax
   - r : default, fist, open, mic(주먹), peace, relax, point
 - `variants/tails_whole/` : 안 자른 트윈테일입니다. 기본은 3조각(root/mid/tip, 위 조각이 앞)입니다.
-- `effects/sweat_drop.png` : 공용 효과의 복사본입니다(원본은 i2l/effects).
+- `effects/sweat_drop.png` : 공용 효과의 복사본입니다(원본은 저장소의 `effects/sweat_drop/`).
 - `miku_v2.psd` : 기본 레이어 45장과 숨긴 `variants (hidden)` 그룹(표정·손·안 자른 트윈테일)
 - `sheet.png` : 미리보기 시트(자세, 표정, 손, 트윈테일)
 - 머리(head) 뼈는 작게만 기울이세요. 목 보강은 하지 않았습니다(사용자 결정).
