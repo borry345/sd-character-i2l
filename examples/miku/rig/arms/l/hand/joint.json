@@ -1,0 +1,29 @@
+{
+ "layer": "forearm_l.png",
+ "pivot": [
+  428.9,
+  621.6
+ ],
+ "cut": [
+  416.0,
+  612.0,
+  443.0,
+  632.0
+ ],
+ "width_px": 36.6,
+ "cap_px": 0,
+ "line_px": 4,
+ "axis": [
+  -0.585,
+  0.811
+ ],
+ "pieces": {
+  "forearm2_l": 3239,
+  "hand_l": 2717
+ },
+ "order_front_to_back": [
+  "hand_l",
+  "forearm2_l"
+ ],
+ "note": "hand_l_joint_line moves with hand_l (same bone) but is drawn behind forearm2_l"
+}

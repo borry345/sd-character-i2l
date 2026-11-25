@@ -1,0 +1,39 @@
+{
+ "layer": "18_tail_right.png",
+ "lined": "lined_tail_right.png",
+ "names_top_to_bottom": [
+  "tail_right_root",
+  "tail_right_mid",
+  "tail_right_tip"
+ ],
+ "order_front_to_back": [
+  "tail_right_root",
+  "tail_right_mid",
+  "tail_right_tip"
+ ],
+ "overlap_px": 14,
+ "joints": [
+  {
+   "parent": "tail_right_root",
+   "child": "tail_right_mid",
+   "pivot": [
+    683.0,
+    310.5
+   ]
+  },
+  {
+   "parent": "tail_right_mid",
+   "child": "tail_right_tip",
+   "pivot": [
+    709.5,
+    459.5
+   ]
+  }
+ ],
+ "pieces_px": {
+  "tail_right_root": 13134,
+  "tail_right_mid": 19067,
+  "tail_right_tip": 55677
+ },
+ "note": "each child turns around its pivot, together with everything below it"
+}

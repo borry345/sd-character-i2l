@@ -18,8 +18,12 @@
 | | [amodal_complete.py](#amodal_completepy) | 앞 레이어에 가려진 부분 그리기 (SDXL) | ✔ |
 | | [mask_inpaint.py](#mask_inpaintpy) | 마스크 영역만 다시 그리기 (SDXL) | ✔ |
 | 리깅 분리 | [split_joint.py](#split_jointpy) | 레이어를 관절(무릎·팔꿈치)에서 두 조각 + 관절 외곽선으로 | |
+| | [split_chain.py](#split_chainpy) | 긴 부위(트윈테일)를 사람이 그은 선(V자·곡선)으로 여러 조각 체인으로 | |
 | | [face_parts.py](#face_partspy) | 표정 편집본 실행 결과에서 눈(좌·우)·입·홍조·땀 파츠 만들기 | |
-| 공통 | [layer_common.py](#layer_commonpy) | 여러 도구가 같이 쓰는 함수 (입·코 색 `rgb_from_src`) | |
+| | [sleeve_cloth.py](#sleeve_clothpy) | 소매 레이어에서 천만 남기기, 위·아래 끝 외곽선 두께를 옆과 같게 | |
+| | [line_cut.py](#line_cutpy) | 사람이 그은 빨강·노랑 선을 벽으로 레이어 자르기 | |
+| | `split_hand.py` | 소매에서 손 떼기 (예전 방식, 지금은 맨팔 그림 + `sleeve_cloth.py --edge`를 씀) | |
+| 공통 | [layer_common.py](#layer_commonpy) | 여러 도구가 같이 쓰는 함수 (입·코 색 `rgb_from_src`, 투명 픽셀 색 `bleed`) | |
 | 조립·확인 | [assemble_layers.py](#assemble_layerspy) | 원래 크기로 되돌리고 원본 픽셀로 PSD | |
 | | [psd_report.py](#psd_reportpy) | PSD 레이어 추출·목록·원본 비교 | |
 | | `selftest_psd_report.py` | psd_report 자체 테스트 (`$PY tools\selftest_psd_report.py <출력 폴더>`) | |
@@ -253,6 +257,10 @@ SDXL 인페인팅으로 마스크(흰색)만 다시 그려요. 8GB에 맞추려�
 | `--front` | `second` | 앞에 그릴 조각 (기본: 아래 조각 = 종아리·하박) |
 | `--cap` | 폭/2 | 관절 캡 반지름 |
 | `--line_px` | 4 | 관절 외곽선 두께 |
+| `--pivot x,y` | 선 가운데 | 회전 중심을 직접 지정 (소매와 맨팔이 같은 팔꿈치를 쓰게) |
+
+`--cap 0`이면 캡·관절 외곽선 없이 선에서 그냥 잘라요 (손처럼 돌리지 않고 갈아 끼우는 부분).
+조각은 `bleed()`로 저장해요(투명 픽셀에 가장자리 색). 회전했을 때 가장자리에 흰 선·검은 테가 생기지 않아요.
 
 출력과 그리는 순서 (앞→뒤):
 1. `<아래>.png`: 아래 조각 + 둥근 관절 캡 (캡은 외곽선 없음, 위 조각의 원본 픽셀)
@@ -280,3 +288,40 @@ SDXL 인페인팅으로 마스크(흰색)만 다시 그려요. 8GB에 맞추려�
 ## layer_common.py
 여러 도구가 같이 쓰는 함수. 새 도구를 만들 때도 여기서 가져다 쓰세요.
 - `rgb_from_src(layer, src, mask=None)`: 모양(알파)은 레이어, 색은 원본 그림. See-through의 입·코 레이어는 가장자리가 반투명 회색이라 그대로 쓰면 수염처럼 보여요. **입·코 레이어를 가져오는 도구는 모두 이걸 써야 해요** (`mix_layers.py`의 `rgb_from: src`, `face_parts.py`의 입).
+- `bleed(layer)`: 완전히 투명한 픽셀에 가장 가까운 보이는 픽셀의 색을 넣어요(알파는 그대로). 투명 픽셀이 검정이면 엔진이 조각을 돌리거나 늘릴 때 가장자리가 어두워지거나(bilinear) 하얗게 튀어요(bicubic). **리그 조각을 저장하는 도구는 모두 이걸 써요** (`split_joint.py`, `split_chain.py`).
+
+## split_chain.py
+트윈테일처럼 긴 부위를 사람이 그은 빨간 선으로 여러 조각 체인으로 나눠요. 선 모양은 자유(V자·곡선)이고, 선 끝이 외곽선에 못 미치면 끝 방향으로 이어 그어요.
+```powershell
+& $PY tools\split_chain.py --layer 14_tail_left.png --lined lined_tail_left.png --out_dir tails\left `
+  --names tail_left_root,tail_left_mid,tail_left_tip
+```
+| 인자 | 기본값 | 뜻 |
+|---|---|---|
+| `--lined` | | 같은 크기 사본에 빨간 선을 그은 그림 (선 하나 = 자르는 곳 하나) |
+| `--names` | `piece0,...` | 위에서 아래 순서 이름 |
+| `--front` | `top` | 위 조각이 앞 (뿌리 > 중간 > 끝). `bottom`이면 반대 |
+| `--overlap` | 14 | 뒤 조각이 선 너머로 더 갖는 원본 픽셀 (굽힐 때 바깥쪽 틈 메움, 곧게 두면 가려짐) |
+| `--feather` | 8 | 앞 조각이 선 너머로 서서히 사라지는 폭. 굽힐 때 이음매·외곽선 턱이 부드러워짐 (0 = 딱 자름) |
+
+관절 기준점은 선 양 끝(외곽선과 만나는 점)의 가운데예요. 출력: 조각 PNG, `chain.json`(기준점·순서), `chain_check.png`(곧게, ±10°·±20°씩).
+
+![딱 자름 vs 서서히](images/rig_tail_seam.png)
+*위 두 줄: 딱 자름 (V자 이음매·외곽선 턱), 아래 두 줄: `--feather 8`*
+
+## sleeve_cloth.py
+소매(토시) 레이어에서 천만 남겨요.
+```powershell
+& $PY tools\sleeve_cloth.py --layer handwear-l.png --out cloth_l.png --edge auto
+```
+- `--edge auto`(추천): 위·아래 청록 띠(trim)를 찾아, 띠에서 N px 바깥을 끝으로 잘라요. N = 소매 옆 검은 외곽선 두께(가운데 줄들의 중앙값) + 0.5. 띠와 끝 사이는 외곽선 색, 끝은 1px 부드럽게 → 양쪽 소매 끝 두께가 옆과 같고 계단이 없어요.
+  - 띠 모양은 열마다 따라가고(5열 평활, 띠 안으로는 안 들어감), 띠 양 끝 너머는 기울기대로 이어요.
+  - 손가락의 푸른 하이라이트를 띠로 착각하지 않게, 각 절반에서 가장 큰 청록 덩어리만 띠로 봐요.
+- `--edge` 없이: 위 띠 위의 살(어깨)과 얇은 선을 지우는 예전 방식.
+
+## line_cut.py
+사람이 레이어 사본에 그은 선을 벽으로 써서 잘라요. 노란 선은 어디서든 벽이고, 빨간 선은 위쪽 절반에서만 벽이에요(아래 빨간 선은 안내선). 레이어 자체의 빨간 무늬(01 문신 등)는 벽이 아니에요. 벽으로 나뉜 조각 중 어두운 픽셀이 가장 많은 조각(`--keep dark`)이나 가장 큰 조각(`--keep big`)을 남겨요.
+```powershell
+& $PY tools\line_cut.py --lined cut_lined_handwear-l.png --layer handwear-l.png --out cloth_l.png
+```
+손으로 그은 선 그대로 자르면 끝이 계단져 보여서, 소매는 결국 `sleeve_cloth.py --edge auto`를 썼어요.

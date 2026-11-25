@@ -1,0 +1,86 @@
+{
+ "l": {
+  "front_to_back": [
+   "cloth/cloth_lower_l",
+   "cloth/cloth_upper_l",
+   "cloth/cloth_lower_l_joint_line",
+   "hand/hand_l",
+   "hand/forearm2_l",
+   "arm/upperarm_l",
+   "arm/forearm_l_joint_line"
+  ],
+  "bones": {
+   "upper": [
+    "cloth_upper_l",
+    "upperarm_l"
+   ],
+   "forearm": [
+    "cloth_lower_l",
+    "cloth_lower_l_joint_line",
+    "forearm2_l",
+    "forearm_l_joint_line",
+    "hand_l (fixed, no wrist joint; swap slot for hand shapes)"
+   ]
+  },
+  "elbow_pivot": [
+   466.1,
+   554.8
+  ],
+  "hand_slot": {
+   "cut": [
+    416.0,
+    612.0,
+    443.0,
+    632.0
+   ],
+   "note": "hand parts are swapped, not rotated (user decision 2026-11-25)"
+  },
+  "source": {
+   "cloth": "v1 handwear -> sleeve_cloth.py --edge auto",
+   "bare arm": "miku_bare_arms.png -> See-through seed0 handwear -> v1 page",
+   "lines": "lines/lined_bare_l.png"
+  }
+ },
+ "r": {
+  "front_to_back": [
+   "cloth/cloth_lower_r",
+   "cloth/cloth_upper_r",
+   "cloth/cloth_lower_r_joint_line",
+   "hand/hand_r",
+   "hand/forearm2_r",
+   "arm/upperarm_r",
+   "arm/forearm_r_joint_line"
+  ],
+  "bones": {
+   "upper": [
+    "cloth_upper_r",
+    "upperarm_r"
+   ],
+   "forearm": [
+    "cloth_lower_r",
+    "cloth_lower_r_joint_line",
+    "forearm2_r",
+    "forearm_r_joint_line",
+    "hand_r (fixed, no wrist joint; swap slot for hand shapes)"
+   ]
+  },
+  "elbow_pivot": [
+   601.7,
+   558.8
+  ],
+  "hand_slot": {
+   "cut": [
+    634.0,
+    627.0,
+    662.0,
+    614.0
+   ],
+   "note": "hand parts are swapped, not rotated (user decision 2026-11-25)"
+  },
+  "source": {
+   "cloth": "v1 handwear -> sleeve_cloth.py --edge auto",
+   "bare arm": "miku_bare_arms.png -> See-through seed0 handwear -> v1 page",
+   "lines": "lines/lined_bare_r.png"
+  }
+ }
+}

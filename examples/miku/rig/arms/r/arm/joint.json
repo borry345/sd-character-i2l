@@ -1,0 +1,30 @@
+{
+ "layer": "bare_r.png",
+ "pivot": [
+  601.7,
+  558.8
+ ],
+ "cut": [
+  589.0,
+  569.0,
+  614.0,
+  549.0
+ ],
+ "width_px": 34.2,
+ "cap_px": 17,
+ "line_px": 4,
+ "axis": [
+  0.561,
+  0.828
+ ],
+ "pieces": {
+  "upperarm_r": 4102,
+  "forearm_r": 5031
+ },
+ "order_front_to_back": [
+  "forearm_r",
+  "upperarm_r",
+  "forearm_r_joint_line"
+ ],
+ "note": "forearm_r_joint_line moves with forearm_r (same bone) but is drawn behind upperarm_r"
+}

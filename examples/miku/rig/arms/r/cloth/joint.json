@@ -1,0 +1,30 @@
+{
+ "layer": "cloth_edge_r.png",
+ "pivot": [
+  601.7,
+  558.8
+ ],
+ "cut": [
+  589.0,
+  569.0,
+  614.0,
+  549.0
+ ],
+ "width_px": 48.3,
+ "cap_px": 24,
+ "line_px": 4,
+ "axis": [
+  0.456,
+  0.89
+ ],
+ "pieces": {
+  "cloth_upper_r": 3445,
+  "cloth_lower_r": 8573
+ },
+ "order_front_to_back": [
+  "cloth_lower_r",
+  "cloth_upper_r",
+  "cloth_lower_r_joint_line"
+ ],
+ "note": "cloth_lower_r_joint_line moves with cloth_lower_r (same bone) but is drawn behind cloth_upper_r"
+}

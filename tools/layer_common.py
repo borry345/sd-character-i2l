@@ -17,3 +17,16 @@ def rgb_from_src(layer, src, mask=None):
         mask = layer[..., 3] > 0
     out[mask, :3] = src[mask, :3]
     return out
+
+
+def bleed(layer):
+    """Alpha bleeding: give every fully transparent pixel the colour of the nearest visible pixel (alpha
+    unchanged). Rig pieces are rotated/scaled by the engine; with black in the transparent pixels the
+    filtered edge turns dark (bilinear) or overshoots to white (bicubic). Use when saving rig pieces."""
+    from scipy.ndimage import distance_transform_edt
+    out = layer.copy()
+    vis = layer[..., 3] > 0
+    if vis.any() and not vis.all():
+        _, (iy, ix) = distance_transform_edt(~vis, return_indices=True)
+        out[~vis, :3] = layer[iy[~vis], ix[~vis], :3]
+    return out

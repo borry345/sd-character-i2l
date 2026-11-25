@@ -1,0 +1,488 @@
+{
+ "canvas": [
+  1024,
+  1024
+ ],
+ "view": "side view facing left only; facing right = mirror the whole rig horizontally",
+ "l_r": "l/r and left/right = viewer side (image left / image right)",
+ "layers_front_to_back": [
+  {
+   "name": "cloth_lower_l",
+   "file": "layers/00_cloth_lower_l.png",
+   "bone": "forearm_l"
+  },
+  {
+   "name": "cloth_upper_l",
+   "file": "layers/01_cloth_upper_l.png",
+   "bone": "upperarm_l"
+  },
+  {
+   "name": "cloth_lower_l_joint_line",
+   "file": "layers/02_cloth_lower_l_joint_line.png",
+   "bone": "forearm_l"
+  },
+  {
+   "name": "hand_l",
+   "file": "layers/03_hand_l.png",
+   "bone": "forearm_l"
+  },
+  {
+   "name": "forearm_l",
+   "file": "layers/04_forearm_l.png",
+   "bone": "forearm_l"
+  },
+  {
+   "name": "upperarm_l",
+   "file": "layers/05_upperarm_l.png",
+   "bone": "upperarm_l"
+  },
+  {
+   "name": "forearm_l_joint_line",
+   "file": "layers/06_forearm_l_joint_line.png",
+   "bone": "forearm_l"
+  },
+  {
+   "name": "front_hair",
+   "file": "layers/07_front_hair.png",
+   "bone": "head"
+  },
+  {
+   "name": "eyelash_l",
+   "file": "layers/08_eyelash_l.png",
+   "bone": "head"
+  },
+  {
+   "name": "eyelash_r",
+   "file": "layers/09_eyelash_r.png",
+   "bone": "head"
+  },
+  {
+   "name": "irides_l",
+   "file": "layers/10_irides_l.png",
+   "bone": "head"
+  },
+  {
+   "name": "irides_r",
+   "file": "layers/11_irides_r.png",
+   "bone": "head"
+  },
+  {
+   "name": "eyewhite_l",
+   "file": "layers/12_eyewhite_l.png",
+   "bone": "head"
+  },
+  {
+   "name": "eyewhite_r",
+   "file": "layers/13_eyewhite_r.png",
+   "bone": "head"
+  },
+  {
+   "name": "eyebrow_l",
+   "file": "layers/14_eyebrow_l.png",
+   "bone": "head"
+  },
+  {
+   "name": "eyebrow_r",
+   "file": "layers/15_eyebrow_r.png",
+   "bone": "head"
+  },
+  {
+   "name": "mouth",
+   "file": "layers/16_mouth.png",
+   "bone": "head"
+  },
+  {
+   "name": "face",
+   "file": "layers/17_face.png",
+   "bone": "head"
+  },
+  {
+   "name": "headwear_speaker_l",
+   "file": "layers/18_headwear_speaker_l.png",
+   "bone": "head"
+  },
+  {
+   "name": "headwear_ring_l_front",
+   "file": "layers/19_headwear_ring_l_front.png",
+   "bone": "head"
+  },
+  {
+   "name": "topwear",
+   "file": "layers/20_topwear.png",
+   "bone": "body"
+  },
+  {
+   "name": "bottomwear",
+   "file": "layers/21_bottomwear.png",
+   "bone": "body"
+  },
+  {
+   "name": "shin_l",
+   "file": "layers/22_shin_l.png",
+   "bone": "shin_l"
+  },
+  {
+   "name": "thigh_l",
+   "file": "layers/23_thigh_l.png",
+   "bone": "thigh_l"
+  },
+  {
+   "name": "shin_l_joint_line",
+   "file": "layers/24_shin_l_joint_line.png",
+   "bone": "shin_l"
+  },
+  {
+   "name": "shin_r",
+   "file": "layers/25_shin_r.png",
+   "bone": "shin_r"
+  },
+  {
+   "name": "thigh_r",
+   "file": "layers/26_thigh_r.png",
+   "bone": "thigh_r"
+  },
+  {
+   "name": "shin_r_joint_line",
+   "file": "layers/27_shin_r_joint_line.png",
+   "bone": "shin_r"
+  },
+  {
+   "name": "tail_left_root",
+   "file": "layers/28_tail_left_root.png",
+   "bone": "tail_left_root"
+  },
+  {
+   "name": "tail_left_mid",
+   "file": "layers/29_tail_left_mid.png",
+   "bone": "tail_left_mid"
+  },
+  {
+   "name": "tail_left_tip",
+   "file": "layers/30_tail_left_tip.png",
+   "bone": "tail_left_tip"
+  },
+  {
+   "name": "back_center",
+   "file": "layers/31_back_center.png",
+   "bone": "head"
+  },
+  {
+   "name": "cloth_lower_r",
+   "file": "layers/32_cloth_lower_r.png",
+   "bone": "forearm_r"
+  },
+  {
+   "name": "cloth_upper_r",
+   "file": "layers/33_cloth_upper_r.png",
+   "bone": "upperarm_r"
+  },
+  {
+   "name": "cloth_lower_r_joint_line",
+   "file": "layers/34_cloth_lower_r_joint_line.png",
+   "bone": "forearm_r"
+  },
+  {
+   "name": "hand_r",
+   "file": "layers/35_hand_r.png",
+   "bone": "forearm_r"
+  },
+  {
+   "name": "forearm_r",
+   "file": "layers/36_forearm_r.png",
+   "bone": "forearm_r"
+  },
+  {
+   "name": "upperarm_r",
+   "file": "layers/37_upperarm_r.png",
+   "bone": "upperarm_r"
+  },
+  {
+   "name": "forearm_r_joint_line",
+   "file": "layers/38_forearm_r_joint_line.png",
+   "bone": "forearm_r"
+  },
+  {
+   "name": "headwear_ring_r_front",
+   "file": "layers/39_headwear_ring_r_front.png",
+   "bone": "head"
+  },
+  {
+   "name": "tail_right_root",
+   "file": "layers/40_tail_right_root.png",
+   "bone": "tail_right_root"
+  },
+  {
+   "name": "tail_right_mid",
+   "file": "layers/41_tail_right_mid.png",
+   "bone": "tail_right_mid"
+  },
+  {
+   "name": "tail_right_tip",
+   "file": "layers/42_tail_right_tip.png",
+   "bone": "tail_right_tip"
+  },
+  {
+   "name": "headwear_ring_l_back",
+   "file": "layers/43_headwear_ring_l_back.png",
+   "bone": "head"
+  },
+  {
+   "name": "headwear_ring_r_back",
+   "file": "layers/44_headwear_ring_r_back.png",
+   "bone": "head"
+  }
+ ],
+ "bones": {
+  "body": {
+   "parent": null,
+   "pivot": [
+    512,
+    640
+   ],
+   "note": "root (hips); whole character"
+  },
+  "head": {
+   "parent": "body",
+   "pivot": [
+    548.8,
+    457
+   ],
+   "note": "neck (bottom of face). Small tilts only: the neck was not lengthened (user: skip neck work)"
+  },
+  "upperarm_l": {
+   "parent": "body",
+   "pivot": [
+    488.3,
+    480
+   ]
+  },
+  "forearm_l": {
+   "parent": "upperarm_l",
+   "pivot": [
+    466.1,
+    554.8
+   ]
+  },
+  "upperarm_r": {
+   "parent": "body",
+   "pivot": [
+    565,
+    480
+   ]
+  },
+  "forearm_r": {
+   "parent": "upperarm_r",
+   "pivot": [
+    601.7,
+    558.8
+   ]
+  },
+  "thigh_l": {
+   "parent": "body",
+   "pivot": [
+    497.4,
+    620
+   ]
+  },
+  "shin_l": {
+   "parent": "thigh_l",
+   "pivot": [
+    484.8,
+    721.9
+   ]
+  },
+  "thigh_r": {
+   "parent": "body",
+   "pivot": [
+    584.3,
+    621
+   ]
+  },
+  "shin_r": {
+   "parent": "thigh_r",
+   "pivot": [
+    605.3,
+    732.1
+   ]
+  },
+  "tail_left_root": {
+   "parent": "head",
+   "pivot": [
+    370.4,
+    186
+   ]
+  },
+  "tail_left_mid": {
+   "parent": "tail_left_root",
+   "pivot": [
+    333.0,
+    310.8
+   ]
+  },
+  "tail_left_tip": {
+   "parent": "tail_left_mid",
+   "pivot": [
+    303.0,
+    431.0
+   ]
+  },
+  "tail_right_root": {
+   "parent": "head",
+   "pivot": [
+    669.5,
+    191
+   ]
+  },
+  "tail_right_mid": {
+   "parent": "tail_right_root",
+   "pivot": [
+    683.0,
+    310.5
+   ]
+  },
+  "tail_right_tip": {
+   "parent": "tail_right_mid",
+   "pivot": [
+    709.5,
+    459.5
+   ]
+  }
+ },
+ "slots": {
+  "hand_l": {
+   "layer": "hand_l",
+   "swap": {
+    "default": "variants/hands/l/hand_default_l.png",
+    "fist": "variants/hands/l/hand_fist_l.png",
+    "open": "variants/hands/l/hand_open_l.png",
+    "mic": "variants/hands/l/hand_mic_l.png",
+    "peace": "variants/hands/l/hand_peace_l.png",
+    "relax": "variants/hands/l/hand_relax_l.png"
+   },
+   "note": "hands are swapped, not rotated; all cut at the same wrist line (mic_r = fist, no mic)"
+  },
+  "hand_r": {
+   "layer": "hand_r",
+   "swap": {
+    "default": "variants/hands/r/hand_default_r.png",
+    "fist": "variants/hands/r/hand_fist_r.png",
+    "open": "variants/hands/r/hand_open_r.png",
+    "mic": "variants/hands/r/hand_mic_r.png",
+    "peace": "variants/hands/r/hand_peace_r.png",
+    "relax": "variants/hands/r/hand_relax_r.png",
+    "point": "variants/hands/r/hand_point_r.png"
+   }
+  },
+  "face": {
+   "layers": [
+    "eyelash_l",
+    "eyelash_r",
+    "irides_l",
+    "irides_r",
+    "eyewhite_l",
+    "eyewhite_r",
+    "eyebrow_l",
+    "eyebrow_r",
+    "mouth"
+   ],
+   "swap": {
+    "calm": {
+     "eyebrow_l": "variants/expressions/calm/eyebrow_l.png",
+     "eyebrow_r": "variants/expressions/calm/eyebrow_r.png",
+     "eyelash_l": "variants/expressions/calm/eyelash_l.png",
+     "eyelash_r": "variants/expressions/calm/eyelash_r.png",
+     "eyewhite_l": "variants/expressions/calm/eyewhite_l.png",
+     "eyewhite_r": "variants/expressions/calm/eyewhite_r.png",
+     "irides_l": "variants/expressions/calm/irides_l.png",
+     "irides_r": "variants/expressions/calm/irides_r.png",
+     "mouth": "variants/expressions/calm/mouth.png"
+    },
+    "smile": {
+     "blush": "variants/expressions/smile/blush.png",
+     "eyebrow_l": "variants/expressions/smile/eyebrow_l.png",
+     "eyebrow_r": "variants/expressions/smile/eyebrow_r.png",
+     "eyelash_l": "variants/expressions/smile/eyelash_l.png",
+     "eyelash_r": "variants/expressions/smile/eyelash_r.png",
+     "eyewhite_l": "variants/expressions/smile/eyewhite_l.png",
+     "eyewhite_r": "variants/expressions/smile/eyewhite_r.png",
+     "irides_l": "variants/expressions/smile/irides_l.png",
+     "irides_r": "variants/expressions/smile/irides_r.png",
+     "mouth": "variants/expressions/smile/mouth.png"
+    },
+    "ah": {
+     "eyebrow_l": "variants/expressions/ah/eyebrow_l.png",
+     "eyebrow_r": "variants/expressions/ah/eyebrow_r.png",
+     "eyelash_l": "variants/expressions/ah/eyelash_l.png",
+     "eyelash_r": "variants/expressions/ah/eyelash_r.png",
+     "eyewhite_l": "variants/expressions/ah/eyewhite_l.png",
+     "eyewhite_r": "variants/expressions/ah/eyewhite_r.png",
+     "irides_l": "variants/expressions/ah/irides_l.png",
+     "irides_r": "variants/expressions/ah/irides_r.png",
+     "mouth": "variants/expressions/ah/mouth.png"
+    },
+    "ee": {
+     "eyebrow_l": "variants/expressions/ee/eyebrow_l.png",
+     "eyebrow_r": "variants/expressions/ee/eyebrow_r.png",
+     "eyelash_l": "variants/expressions/ee/eyelash_l.png",
+     "eyelash_r": "variants/expressions/ee/eyelash_r.png",
+     "eyewhite_l": "variants/expressions/ee/eyewhite_l.png",
+     "eyewhite_r": "variants/expressions/ee/eyewhite_r.png",
+     "irides_l": "variants/expressions/ee/irides_l.png",
+     "irides_r": "variants/expressions/ee/irides_r.png",
+     "mouth": "variants/expressions/ee/mouth.png"
+    },
+    "oh": {
+     "eyebrow_l": "variants/expressions/oh/eyebrow_l.png",
+     "eyebrow_r": "variants/expressions/oh/eyebrow_r.png",
+     "eyelash_l": "variants/expressions/oh/eyelash_l.png",
+     "eyelash_r": "variants/expressions/oh/eyelash_r.png",
+     "eyewhite_l": "variants/expressions/oh/eyewhite_l.png",
+     "eyewhite_r": "variants/expressions/oh/eyewhite_r.png",
+     "irides_l": "variants/expressions/oh/irides_l.png",
+     "irides_r": "variants/expressions/oh/irides_r.png",
+     "mouth": "variants/expressions/oh/mouth.png"
+    },
+    "surprised": {
+     "eyebrow_l": "variants/expressions/surprised/eyebrow_l.png",
+     "eyebrow_r": "variants/expressions/surprised/eyebrow_r.png",
+     "eyelash_l": "variants/expressions/surprised/eyelash_l.png",
+     "eyelash_r": "variants/expressions/surprised/eyelash_r.png",
+     "eyewhite_l": "variants/expressions/surprised/eyewhite_l.png",
+     "eyewhite_r": "variants/expressions/surprised/eyewhite_r.png",
+     "irides_l": "variants/expressions/surprised/irides_l.png",
+     "irides_r": "variants/expressions/surprised/irides_r.png",
+     "mouth": "variants/expressions/surprised/mouth.png",
+     "sweat": "variants/expressions/surprised/sweat.png"
+    },
+    "sleeping": {
+     "eyebrow_l": "variants/expressions/sleeping/eyebrow_l.png",
+     "eyebrow_r": "variants/expressions/sleeping/eyebrow_r.png",
+     "eyelash_l": "variants/expressions/sleeping/eyelash_l.png",
+     "eyelash_r": "variants/expressions/sleeping/eyelash_r.png",
+     "eyewhite_l": "variants/expressions/sleeping/eyewhite_l.png",
+     "eyewhite_r": "variants/expressions/sleeping/eyewhite_r.png",
+     "irides_l": "variants/expressions/sleeping/irides_l.png",
+     "irides_r": "variants/expressions/sleeping/irides_r.png",
+     "mouth": "variants/expressions/sleeping/mouth.png"
+    }
+   },
+   "note": "replace these layers with the expression set; a part missing in a set (e.g. irides in calm, closed eyes) = hide it. blush (smile) and sweat (surprised): draw right in front of face"
+  },
+  "tails": {
+   "default": "split3 (root/mid/tip)",
+   "whole": {
+    "left": "variants/tails_whole/tail_left.png",
+    "right": "variants/tails_whole/tail_right.png"
+   },
+   "note": "whole = one piece per tail; use instead of the 3 tail_* layers (same place in the order)"
+  }
+ },
+ "joint_lines": "a *_joint_line layer moves with its bone but is drawn behind the piece above it (see order)",
+ "sources": {
+  "v1": "final/miku_v1",
+  "arms": "seethrough_test/rig/arms/final/arms_rig.json",
+  "legs": "seethrough_test/rig/legs",
+  "face": "seethrough_test/rig/face/face_parts.json",
+  "tails": "seethrough_test/rig/tails/README.md"
+ }
+}

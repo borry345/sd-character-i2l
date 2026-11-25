@@ -19,6 +19,7 @@
 - 머리 부위가 잘리지 않게 머리 자르기 상자를 자동으로 넓히기 (`tools/head_grow.py`)
 - 글로 부위를 지정해 레이어를 더 나누기: Grounding DINO + SAM2 + LaMa (`tools/text_layers.py`)
 - 앞 레이어에 가려진 부분을 SDXL 인페인팅으로 그리기 (`tools/amodal_complete.py`)
+- 리깅용 나누기: 관절(무릎·팔꿈치) 자르기 + 관절 외곽선, 트윈테일 체인, 소매 천만 남기기, 표정·손 모양 바꿔 끼우기 파츠, 뼈·슬롯 정보(`rig.json`) (`tools/split_joint.py`, `split_chain.py`, `sleeve_cloth.py`, `face_parts.py`)
 - 단계별 검토 이미지, seed·버전 비교 시트, 레이어 잔선 측정
 
 ## 문서
@@ -60,6 +61,8 @@ spec 예시는 [examples/miku/final/spec.json](examples/miku/final/spec.json), �
 |---|---|
 | `input/` | 원본 그림 (1312×1199) |
 | `final/` | 확정본 PSD(`miku_v1.psd`, 21레이어), 레이어 PNG, 합성·시트·가려짐 확인 이미지, `spec.json` |
+| `final_v2/` | 리깅용 확정본: 레이어 45장, `rig.json`(순서·뼈·슬롯), 표정·손·트윈테일 바꿔 끼우기, `miku_v2.psd`, `sheet.png` |
+| `rig/` | 리깅 나누기 과정: 다리(legs), 팔·소매·손(arms), 트윈테일(tails), 표정 파츠(face), 사람이 그은 선 |
 | `headwear/` | 헤드셋 고리를 앞/뒤로 나눈 과정 (생성 결과, 사람이 빨간 선으로 표시한 그림, 6조각) |
 | `manual/` | 사람이 직접 다듬은 레이어, 지울 곳 표시와 마스크 |
 | `back_center/` | 가려진 뒤통수를 분리·생성한 과정 (text_layers, amodal 후보) |

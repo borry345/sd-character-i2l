@@ -1,0 +1,30 @@
+{
+ "layer": "bare_l.png",
+ "pivot": [
+  466.1,
+  554.8
+ ],
+ "cut": [
+  450.0,
+  547.0,
+  483.0,
+  563.0
+ ],
+ "width_px": 37.6,
+ "cap_px": 19,
+ "line_px": 4,
+ "axis": [
+  -0.467,
+  0.884
+ ],
+ "pieces": {
+  "upperarm_l": 4449,
+  "forearm_l": 5956
+ },
+ "order_front_to_back": [
+  "forearm_l",
+  "upperarm_l",
+  "forearm_l_joint_line"
+ ],
+ "note": "forearm_l_joint_line moves with forearm_l (same bone) but is drawn behind upperarm_l"
+}
