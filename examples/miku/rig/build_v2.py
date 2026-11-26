@@ -160,6 +160,7 @@ def main():
     shutil.copy('effects/sweat_drop/sweat_drop.png', f'{OUT}/effects/sweat_drop.png')
 
     rig = {
+        'purpose': 'deliverable = layers_front_to_back + slots (layers split for rigging). bones = temporary TEST bones only, to check that the split pieces bend without gaps; not a production rig (set bones again in the rigging tool)',
         'canvas': [W, H], 'view': 'side view facing left only; facing right = mirror the whole rig horizontally',
         'l_r': 'l/r and left/right = viewer side (image left / image right)',
         'layers_front_to_back': names, 'bones': bones,

@@ -89,7 +89,7 @@ def main():
              ('머리 기울기 + 트윈테일', {'head': 6, 'tail_left_mid': -10, 'tail_left_tip': -10, 'tail_right_mid': 10,
                                 'tail_right_tip': 10})]
     cells = [(t, render(a)) for t, a in poses]
-    rows.append(('자세 (rig.json 뼈)', cells, (150, 150, 900, 840)))
+    rows.append(('자세 (확인용 테스트 뼈)', cells, (150, 150, 900, 840)))
     rows.append(('표정 (face 슬롯)', [(e, render_expr(e)) for e in ['calm', 'smile', 'ah', 'ee', 'oh', 'surprised', 'sleeping']],
                  (380, 240, 680, 470)))
     hs = rig['slots']['hand_l']['swap']

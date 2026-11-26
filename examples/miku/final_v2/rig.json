@@ -1,4 +1,5 @@
 {
+ "purpose": "deliverable = layers_front_to_back + slots (layers split for rigging). bones = temporary TEST bones only, to check that the split pieces bend without gaps; not a production rig (set bones again in the rigging tool)",
  "canvas": [
   1024,
   1024
