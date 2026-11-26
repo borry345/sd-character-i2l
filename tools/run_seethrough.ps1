@@ -1,6 +1,6 @@
 ﻿param(
-  [Parameter(Mandatory)][string]$Src,
-  [Parameter(Mandatory)][string]$OutDir,
+  [Parameter(Mandatory)][string]$Src,  # image path, or a file name inside sources/
+  [string]$OutDir = '',               # default: result/<image name>
   [int]$Resolution = 1024,
   [string]$Script = 'inference/scripts/inference_psd_quantized.py',
   [string[]]$Extra = @(),
@@ -10,7 +10,14 @@
   [int]$HeadTries = 5     # with -HeadBox: max head passes
 )
 $ErrorActionPreference = 'Continue'
-$root = if ($env:I2L_ROOT) { $env:I2L_ROOT } else { Split-Path $PSScriptRoot -Parent }  # i2l folder (tools/..)
+$here = Split-Path $PSScriptRoot -Parent  # folder that holds tools/, sources/, result/
+$root = if ($env:I2L_ROOT) { $env:I2L_ROOT } else { $here }  # folder with env/, hf_cache/, see-through/
+# resolve paths now (the run changes into see-through/); a bare file name is looked up in sources/
+if (-not (Test-Path $Src) -and (Test-Path (Join-Path $here "sources\$Src"))) { $Src = Join-Path $here "sources\$Src" }
+if (-not (Test-Path $Src)) { throw "image not found: $Src (put it in $here\sources)" }
+$Src = (Resolve-Path $Src).Path
+if (-not $OutDir) { $OutDir = Join-Path $here ('result\' + [IO.Path]::GetFileNameWithoutExtension($Src)) }
+if (-not [IO.Path]::IsPathRooted($OutDir)) { $OutDir = Join-Path (Get-Location).Path $OutDir }
 $py = @("$root\env\Scripts\python.exe", "$root\env\python.exe") | Where-Object { Test-Path $_ } | Select-Object -First 1  # venv / conda
 if (-not $py) { throw "python not found in $root\env (see docs/INSTALL.md)" }
 $env:HF_HOME = Join-Path $root 'hf_cache'
@@ -38,7 +45,7 @@ $sampler = Start-Job -ArgumentList $gpuLog -ScriptBlock {
 
 Set-Location (Join-Path $root 'see-through')
 $sw = [Diagnostics.Stopwatch]::StartNew()
-& $py (Join-Path $root 'tools\run_patched.py') $Script --srcp $Src --save_to_psd --resolution $Resolution --save_dir $OutDir @Extra *> $runLog
+& $py (Join-Path $PSScriptRoot 'run_patched.py') $Script --srcp $Src --save_to_psd --resolution $Resolution --save_dir $OutDir @Extra *> $runLog
 $code = $LASTEXITCODE
 $sw.Stop()
 Stop-Job $sampler; Remove-Job $sampler

@@ -9,3 +9,10 @@ __pycache__/
 seethrough_test/
 outputs/
 tmp/
+
+# 사용자 작업 폴더 (원본 그림, 결과물)
+sources/*
+!sources/.gitkeep
+result/*
+!result/.gitkeep
+CLAUDE.local.md

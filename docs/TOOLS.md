@@ -38,11 +38,13 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass   # 지금 창에서�
 & tools\run_seethrough.ps1 -Src <그림.png> -OutDir <출력 폴더> `
   -Extra @('--no_group_offload','--tblr_split','--seed','0') -HeadGrow 3
 ```
+가장 짧게: 그림을 `sources/`에 넣고 `& tools\run_seethrough.ps1 -Src char.png -Extra @('--no_group_offload','--tblr_split','--seed','0')` → `result\char\`에 저장돼요.
+
 `powershell -File ...`로 부르면 `-Extra` 배열의 첫 값만 전달돼요. 반드시 `&`로 부르세요.
 | 인자 | 기본값 | 뜻 |
 |---|---|---|
-| `-Src` | (필수) | 입력 그림. **절대 경로** (실행 중 see-through 폴더로 이동함) |
-| `-OutDir` | (필수) | 출력 폴더. 절대 경로 |
+| `-Src` | (필수) | 입력 그림. 파일 이름만 쓰면 `sources/`에서 찾아요. 상대 경로도 실행 전에 절대 경로로 바꿔요 |
+| `-OutDir` | `result\<그림 이름>` | 출력 폴더. 상대 경로는 지금 폴더 기준 |
 | `-Resolution` | 1024 | 생성 해상도 |
 | `-Script` | `inference/scripts/inference_psd_quantized.py` | 실행할 See-through 스크립트 |
 | `-Extra` | 없음 | See-through에 그대로 넘기는 인자 (`--no_group_offload`, `--tblr_split`, `--seed N` 등) |
