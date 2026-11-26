@@ -1,6 +1,6 @@
 # 작업 흐름: 그림 한 장 → 레이어 PSD → 리깅용으로 나눈 레이어
 
-예시: `examples/miku/input/miku_chibi_sprite.png` (1312×1199, 전신 SD 캐릭터) → `examples/miku/final/miku_v1.psd` (21레이어) → `examples/miku/final_v2/` (리깅용으로 나눈 45레이어 + 바꿔 끼우는 파츠). 이 프로젝트의 목표는 **리깅할 수 있게 레이어를 나누는 것까지**이고, 리깅 자체는 범위 밖이에요.
+예시: `examples/miku/input/miku_chibi_sprite.png` (1312×1199, 전신 SD 캐릭터) → `examples/miku/final_v1/miku_v1.psd` (21레이어) → `examples/miku/final_v2/` (리깅용으로 나눈 45레이어 + 바꿔 끼우는 파츠). 이 프로젝트의 목표는 **리깅할 수 있게 레이어를 나누는 것까지**이고, 리깅 자체는 범위 밖이에요.
 
 자동 파이프라인이 아니에요. **단계마다 확인 이미지를 보고 사람이 고르는** 흐름이고, 고르는 곳은 ✋로 표시했어요.
 명령의 `$PY`는 `env\Scripts\python.exe`(venv) 또는 `env\python.exe`(conda), 경로는 모두 절대 경로로 쓰는 걸 권해요.
@@ -144,9 +144,9 @@ miku에서는 **전부 B, handwear-l만 A** ("01" 글자를 원본 그대로 살
 *사람이 빨간 선으로 "뒤로 갈 부분"을 표시 → 고리 앞은 front hair 뒤·트윈테일 앞, 고리 뒤는 모든 머리 뒤*
 
 ## 7. 확정
-최종 spec과 결과를 한 폴더에 모아요 → [examples/miku/final/](../examples/miku/final/) (`miku_v1.psd`, `layers/`, `composite.png`, `sheet.png`, `hidden.png`, `spec.json`).
+최종 spec과 결과를 한 폴더에 모아요 → [examples/miku/final_v1/](../examples/miku/final_v1/) (`miku_v1.psd`, `layers/`, `composite.png`, `sheet.png`, `hidden.png`, `spec.json`).
 
-![최종 레이어](../examples/miku/final/hidden.png)
+![최종 레이어](../examples/miku/final_v1/hidden.png)
 *최종 21레이어. 초록 = 앞 레이어에 가려지는 부분 (움직이면 드러남)*
 
 ---

@@ -6,11 +6,36 @@
 
 자동 파이프라인이 아니라 **사람이 단계마다 확인 이미지를 보고 고르는 반자동 흐름**이에요. 그 흐름과 막혔던 곳, 해결한 방법을 같이 정리했어요.
 
-| 원본 | 결과 합성 (21레이어) |
+| 원본 | v1 결과 합성 (21레이어) |
 |---|---|
-| ![원본](examples/miku/input/miku_chibi_sprite.png) | ![합성](examples/miku/final/composite.png) |
+| ![원본](examples/miku/input/miku_chibi_sprite.png) | ![합성](examples/miku/final_v1/composite.png) |
 
-![레이어 시트](examples/miku/final/sheet.png)
+![레이어 시트](examples/miku/final_v1/sheet.png)
+
+## 결과물 두 가지: v1과 v2
+같은 그림을 두 단계로 나눠요. v2는 v1을 더 잘게 자른 것이라, v2의 기본 레이어를 쌓으면 v1과 같은 그림이 돼요.
+
+| | **v1: 레이어 PSD** ([final_v1](examples/miku/final_v1/README.md)) | **v2: 리깅용으로 나눈 레이어** ([final_v2](examples/miku/final_v2/README.md)) |
+|---|---|---|
+| 만드는 단계 | 작업 흐름 1~7 (생성·고르기·합치기·가려진 곳 채우기·손질) | 작업 흐름 8~9 (관절·손·트윈테일·표정 나누기, 나눔 확인) |
+| 레이어 수 | 21 | 45 + 바꿔 끼우는 파츠 |
+| 나누는 단위 | 부위 덩어리: 팔 한 장, 다리 한 장, 트윈테일 한 장, 눈 좌우 한 장 | 움직이는 단위: 소매/맨팔 하박·상박/손, 허벅지/종아리, 트윈테일 뿌리·중간·끝, 눈 좌/우 |
+| 바꿔 끼우기 | 없음 | 손 모양(l 6종·r 7종), 표정 11종, 안 자른 트윈테일 |
+| 함께 있는 정보 | `spec.json`(레이어마다 고른 seed·처리) | `rig.json`(그리는 순서, 슬롯, 확인용 테스트 뼈) |
+| 이럴 때 써요 | 리깅 없이 부위별 레이어만 필요할 때: 배경 지우기, 색 바꾸기, 가벼운 흔들기, 일러스트 편집 | 리깅 도구(Spine, Live2D 등)에서 팔다리를 굽히고 손·표정을 바꾸려 할 때 |
+
+**왜 둘 다 두나요?**
+- **v1이 필요한 이유:**
+  - 리깅이 필요 없으면 v1이 최종본이에요. 잘게 나뉜 v2보다 다루기 쉬워요.
+  - v2를 만드는 재료이고, v2가 원래 그림과 같은지 비교하는 기준이에요(`final_v2/v1_diff.png`).
+  - 나누는 방식을 바꿔 v2를 다시 만들 때 여기서 시작해요.
+- **v2가 필요한 이유:** v1만으로는 움직일 수 없는 것들이 있어요.
+  - 팔꿈치·무릎에서 굽히기
+  - 손 모양·표정 바꾸기
+  - 트윈테일 휘기
+  - 한쪽 눈만 감기
+
+v2를 만들면서 새로 그린 곳은 맨팔·손과 바꿔 끼우는 파츠뿐이에요. 나머지는 v1 레이어를 자르기만 했어요.
 
 ---
 
@@ -55,13 +80,13 @@ foreach ($s in 0..9) {
 # 3) 레이어마다 seed를 골라 spec.json을 쓰고 합치기
 .\env\Scripts\python.exe tools\mix_layers.py --spec C:\work\spec.json --out C:\work\out\mix
 ```
-spec 예시는 [examples/miku/final/spec.json](examples/miku/final/spec.json), 옵션은 [docs/TOOLS.md](docs/TOOLS.md)에 있어요.
+spec 예시는 [examples/miku/final_v1/spec.json](examples/miku/final_v1/spec.json), 옵션은 [docs/TOOLS.md](docs/TOOLS.md)에 있어요.
 
 ## 예시 (`examples/miku/`)
 | 폴더 | 내용 |
 |---|---|
 | `input/` | 원본 그림 (1312×1199) |
-| `final/` | 확정본 PSD(`miku_v1.psd`, 21레이어), 레이어 PNG, 합성·시트·가려짐 확인 이미지, `spec.json` |
+| `final_v1/` | v1: 레이어 PSD(`miku_v1.psd`, 21레이어), 레이어 PNG, 합성·시트·가려짐 확인 이미지, `spec.json` |
 | `final_v2/` | 리깅용으로 나눈 레이어 45장, `rig.json`(그리는 순서·바꿔 끼우는 슬롯, 확인용 테스트 뼈), 표정·손·트윈테일 바꿔 끼우기, `miku_v2.psd`, 확인 시트 |
 | `rig/` | 리깅용 나누기 과정: 다리(legs), 팔·소매·손(arms), 트윈테일(tails), 표정 파츠(face), 사람이 그은 선, 확인 스크립트 |
 | `headwear/` | 헤드셋 고리를 앞/뒤로 나눈 과정 (생성 결과, 사람이 빨간 선으로 표시한 그림, 6조각) |
