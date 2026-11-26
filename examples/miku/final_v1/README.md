@@ -4,6 +4,12 @@
 리깅용으로 더 잘게 나눈 버전은 [final_v2](../final_v2/README.md)에 있어요.
 
 ## 무엇이 들어 있나
+- `miku_v1_stretchy.psd` : [Stretchy Studio](https://github.com/MangoLion/stretchystudio)용 PSD (`seethrough_test/rig/export_stretchy.py`)
+  - 레이어를 그림 범위로 잘라 저장했어요. 원래 PSD는 레이어가 모두 1024 전체 크기라, Stretchy가 범위로 뼈를 추정하면 엉뚱해져요.
+  - 이름을 See-through 태그로 바꿨어요(`front hair`, `back hair`, `handwear-l` …). 
+  - **좌우는 캐릭터 기준**이에요(우리 `_l` = 그림 왼쪽 → `-r`). Stretchy의 뼈대가 캐릭터 본인의 왼쪽에 `leftArm`을 두기 때문이에요.
+  - 바꿔 끼우는 파츠는 넣지 않았어요(숨긴 레이어도 모두 가져와서 리깅해 버려요). 이름 대응표는 같은 이름의 `.json`이에요.
+  - 가져오기 마법사에서는 DWPose(AI 자세 인식)를 고르세요. 범위 추정 방식은 손목·발목을 잘못 잡아요(작업 폴더 `seethrough_test/rig/stretchy_check.png`).
 - `miku_v1.psd` : 21레이어 PSD (위 레이어가 앞)
 - `layers/NN_이름.png` : 같은 21장을 PNG로 (번호가 작을수록 앞, 1024 캔버스)
 - `composite.png` : 21장을 쌓은 그림. 원본과 같아요(보이는 픽셀은 모두 원본 색).

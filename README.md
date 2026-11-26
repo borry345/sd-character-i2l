@@ -54,6 +54,7 @@ v2를 만들면서 새로 그린 곳은 맨팔·손과 바꿔 끼우는 파츠�
 | [docs/INSTALL.md](docs/INSTALL.md) | 설치 (conda 환경, torch, See-through, 모델 다운로드) |
 | [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) | 테스트한 GPU·드라이버·버전, 모델 목록과 용량, 메모리 |
 | [docs/WORKFLOW.md](docs/WORKFLOW.md) | 그림 한 장 → PSD → 리깅용 조각까지의 작업 흐름 (예시 이미지 포함) |
+| [docs/RIGGING_TOOLS.md](docs/RIGGING_TOOLS.md) | 리깅 도구로 넘기기: Stretchy Studio·Layer2D 검토, Stretchy용 PSD, 실제 시험(자동 인식·굽히기) 결과와 쓰는 법 |
 | [docs/TOOLS.md](docs/TOOLS.md) | 도구 스크립트·함수·옵션 설명 |
 | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | 문제 → 원인 → 해결 과정 |
 | [docs/HISTORY.md](docs/HISTORY.md) | 작업 기록 (시간순) |

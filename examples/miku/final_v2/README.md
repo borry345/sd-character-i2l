@@ -36,6 +36,12 @@
 - `effects/sweat_drop.png` : 공용 효과의 복사본이에요(원본은 저장소의 `effects/sweat_drop/`).
 
 ## 파일
+- `miku_v2_stretchy.psd` : [Stretchy Studio](https://github.com/MangoLion/stretchystudio)용 PSD (`seethrough_test/rig/export_stretchy.py`)
+  - 레이어를 그림 범위로 잘라 저장했어요. 원래 PSD는 레이어가 모두 1024 전체 크기라, Stretchy가 범위로 뼈를 추정하면 엉뚱해져요.
+  - 이름을 See-through 태그로 바꿨어요(`front hair`, `back hair`, `handwear-l` …). Stretchy는 정확히 `handwear-l`인 레이어만 왼팔 뼈에 붙여서, 팔·다리 조각은 모두 같은 이름(`handwear-l/r`, `legwear-l/r`)이에요.
+  - **좌우는 캐릭터 기준**이에요(우리 `_l` = 그림 왼쪽 → `-r`). Stretchy의 뼈대가 캐릭터 본인의 왼쪽에 `leftArm`을 두기 때문이에요.
+  - 바꿔 끼우는 파츠는 넣지 않았어요(숨긴 레이어도 모두 가져와서 리깅해 버려요). 이름 대응표는 같은 이름의 `.json`이에요.
+  - 가져오기 마법사에서는 DWPose(AI 자세 인식)를 고르세요. 범위 추정 방식은 손목·발목을 잘못 잡아요(작업 폴더 `seethrough_test/rig/stretchy_check.png`).
 - `miku_v2.psd` : 기본 레이어 45장과 숨긴 `variants (hidden)` 그룹(표정 11종·손·안 자른 트윈테일, 빌려 쓰는 파츠는 원래 자리에만 있어요)
 - `rig.json`
   - `layers_front_to_back` : 그리는 순서(**결과물**)
