@@ -1,6 +1,6 @@
 {
  "eye_split_x": 540,
- "eye_split_px": 0,
+ "eye_split_px": 5,
  "left": "x < eye_split_x (viewer left)",
  "runs": {
   "base": {
@@ -128,6 +128,109 @@
    "mouth_rgb_from_src": true,
    "mouth": 236,
    "mouth_rim_removed": 32
+  },
+  "pet": {
+   "eyelash_l": 1170,
+   "eyelash_r": 790,
+   "irides_l": 0,
+   "irides_r": 0,
+   "eyewhite_l": 0,
+   "eyewhite_r": 0,
+   "eyebrow_l": 242,
+   "eyebrow_r": 195,
+   "mouth_rgb_from_src": true,
+   "mouth": 606,
+   "mouth_rim_removed": 30,
+   "blush_boxes": [
+    [
+     467,
+     394,
+     43,
+     28
+    ],
+    [
+     600,
+     403,
+     20,
+     21
+    ]
+   ]
+  },
+  "crying": {
+   "eyelash_l": 955,
+   "eyelash_r": 502,
+   "tears": 1351,
+   "irides_l": 0,
+   "irides_r": 0,
+   "eyewhite_l": 0,
+   "eyewhite_r": 0,
+   "eyebrow_l": 186,
+   "eyebrow_r": 125,
+   "mouth_rgb_from_src": true,
+   "mouth": 142,
+   "mouth_rim_removed": 462,
+   "blush_boxes": [
+    [
+     464,
+     383,
+     158,
+     45
+    ]
+   ]
+  },
+  "question": {
+   "eyelash_l": 1572,
+   "eyelash_r": 1080,
+   "irides_l": 0,
+   "irides_r": 0,
+   "eyewhite_l": 2078,
+   "eyewhite_r": 979,
+   "eyebrow_l": 115,
+   "eyebrow_r": 99,
+   "mouth_rgb_from_src": true,
+   "mouth": 474,
+   "mouth_rim_removed": 140,
+   "blush_boxes": [
+    [
+     469,
+     410,
+     40,
+     22
+    ],
+    [
+     591,
+     413,
+     29,
+     20
+    ]
+   ]
+  },
+  "angry": {
+   "eyelash_l": 1963,
+   "eyelash_r": 1141,
+   "irides_l": 0,
+   "irides_r": 0,
+   "eyewhite_l": 0,
+   "eyewhite_r": 0,
+   "eyebrow_l": 349,
+   "eyebrow_r": 288,
+   "mouth_rgb_from_src": true,
+   "mouth": 1989,
+   "mouth_rim_removed": 21,
+   "blush_boxes": [
+    [
+     466,
+     393,
+     61,
+     41
+    ],
+    [
+     584,
+     399,
+     36,
+     36
+    ]
+   ]
   }
  }
 }

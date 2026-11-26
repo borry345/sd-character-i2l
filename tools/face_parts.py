@@ -11,6 +11,8 @@ See-through put into the face layer.
                 (mouth: colour from the run's src_img.png, rgb_from_src, then the skin ring is cleaned)
     <out>/<expr>/blush.png    only if the expression's face is pinker than the base face on the cheeks
     <out>/<expr>/sweat.png    only if the expression's face has a sweat drop (bluish blob outside the skin)
+    <out>/<expr>/tears.png    with --tears <expr>: See-through put tears of closed eyes into irides; moved here
+                (--wide_blush <expr>: a cheek-to-nose blush band is kept, not only roundish blobs)
     <out>/base/...            the same split for the base picture
     <out>/face_parts.json     eye split column, per-expression pixel counts, mark boxes
     <out>/check_swap.png      base face + each expression's parts (and marks), for checking
@@ -81,7 +83,7 @@ def clean_mouth(m, skin_lab):
     return out, int((al & ~keep).sum())
 
 
-def blush_of(face, base_face, eye_bottom):
+def blush_of(face, base_face, eye_bottom, roundish=True):
     """cheek areas where the expression face is pinker (Lab a*) than the base: copy those pixels, feathered.
     Only below the eyes, away from the face edge (redrawn outlines shift there), and pink itself."""
     both = (face[..., 3] > 200) & (base_face[..., 3] > 200)
@@ -96,7 +98,7 @@ def blush_of(face, base_face, eye_bottom):
     keep = np.zeros_like(m)
     for i in range(1, n):
         x, y, w, h, area = st[i]
-        if area >= 150 and w < 3.5 * h and h < 3.5 * w:  # roundish blobs, not the thin outline-shift streaks
+        if area >= 150 and (not roundish or (w < 3.5 * h and h < 3.5 * w)):  # roundish blobs, not outline-shift streaks
             keep |= cc == i
     if keep.sum() == 0:
         return None, []
@@ -140,9 +142,19 @@ def main():
     ap.add_argument('--out', required=True)
     ap.add_argument('--effects', default=None, help='folder for reusable effect assets (sweat drop)')
     ap.add_argument('--char', default='char', help='character name written in the effect source.json')
+    ap.add_argument('--eye_split', type=int, default=None,
+                    help='fixed left/right split column (keep the one an existing rig uses, e.g. 540); default: computed')
+    ap.add_argument('--tears', action='append', default=[],
+                    help='expression whose irides tag is tears (closed crying eyes): saved as tears.png, irides left empty')
+    ap.add_argument('--wide_blush', action='append', default=[],
+                    help='expression whose blush is a wide band (cheek to nose): keep long pink areas too')
     a = ap.parse_args()
     runs = [('base', a.base)] + [tuple(e.split('=', 1)) for e in a.expr]
     cut, cut_px = eye_cut([d for _, d in runs])
+    if a.eye_split is not None and a.eye_split != cut:
+        print(f'[eyes] computed x={cut}, using fixed x={a.eye_split}')
+        cut = a.eye_split
+        cut_px = int(sum((load(d, t)[:, cut, 3] > 16).sum() for _, d in runs for t in EYES))
     print(f'[eyes] split at x={cut} ({cut_px} eye px in that column over all runs)')
     base_face = load(a.base, 'face')
     skin_lab = np.median(lab(base_face)[cv2.erode((base_face[..., 3] > 200).astype(np.uint8), np.ones((9, 9))) > 0], axis=0)
@@ -156,6 +168,10 @@ def main():
         r = {}
         for t in EYES:
             im = load(d, t)
+            if t == 'irides' and name in a.tears:
+                Image.fromarray(im).save(os.path.join(od, 'tears.png'))
+                r['tears'] = int((im[..., 3] > 16).sum())
+                im = np.zeros_like(im)
             for sfx, sel in (('l', slice(0, cut)), ('r', slice(cut, 1024))):
                 part = np.zeros_like(im)
                 part[:, sel] = im[:, sel]
@@ -171,7 +187,7 @@ def main():
         r['mouth'] = int((m[..., 3] > 16).sum()); r['mouth_rim_removed'] = rim
         if name != 'base':
             face = load(d, 'face')
-            bl, bb = blush_of(face, base_face, eye_bottom)
+            bl, bb = blush_of(face, base_face, eye_bottom, roundish=name not in a.wide_blush)
             if bl is not None:
                 Image.fromarray(bl).save(os.path.join(od, 'blush.png')); r['blush_boxes'] = bb
             sw, sb = sweat_of(face, base_face)
@@ -198,7 +214,7 @@ def check(a, runs, base_face, cut):
     fb = Image.fromarray(base_face).getchannel('A').getbbox()
     box = (fb[0] - 30, fb[1] - 20, fb[2] + 30, fb[3] + 30)
     cells = []
-    order = ['face', 'blush', 'eyewhite_l', 'eyewhite_r', 'irides_l', 'irides_r', 'eyelash_l', 'eyelash_r',
+    order = ['face', 'blush', 'eyewhite_l', 'eyewhite_r', 'irides_l', 'irides_r', 'tears', 'eyelash_l', 'eyelash_r',
              'eyebrow_l', 'eyebrow_r', 'mouth', 'sweat']
     for name, _ in runs:
         c = Image.new('RGBA', (1024, 1024), (255, 255, 255, 255))

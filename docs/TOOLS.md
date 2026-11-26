@@ -19,7 +19,7 @@
 | | [mask_inpaint.py](#mask_inpaintpy) | 마스크 영역만 다시 그리기 (SDXL) | ✔ |
 | 리깅 분리 | [split_joint.py](#split_jointpy) | 레이어를 관절(무릎·팔꿈치)에서 두 조각 + 관절 외곽선으로 | |
 | | [split_chain.py](#split_chainpy) | 긴 부위(트윈테일)를 사람이 그은 선(V자·곡선)으로 여러 조각 체인으로 | |
-| | [face_parts.py](#face_partspy) | 표정 편집본 실행 결과에서 눈(좌·우)·입·홍조·땀 파츠 만들기 | |
+| | [face_parts.py](#face_partspy) | 표정 편집본 실행 결과에서 눈(좌·우)·입·홍조·땀·눈물 파츠 만들기 | |
 | | [sleeve_cloth.py](#sleeve_clothpy) | 소매 레이어에서 천만 남기기, 위·아래 끝 외곽선 두께를 옆과 같게 | |
 | | [line_cut.py](#line_cutpy) | 사람이 그은 빨강·노랑 선을 벽으로 레이어 자르기 | |
 | | `split_hand.py` | 소매에서 손 떼기 (예전 방식, 지금은 맨팔 그림 + `sleeve_cloth.py --edge`를 씀) | |
@@ -309,6 +309,11 @@ SDXL 인페인팅으로 마스크(흰색)만 다시 그려요. 8GB에 맞추려�
 - 홍조: 표정 face가 원본 face보다 분홍인 볼 부분 → `blush.png`
 - 땀: 표정 face의 파란 덩어리 → `sweat.png` + 공용 효과 `effects/sweat_drop/` (다른 캐릭터도 쓰게 잘라서, `source.json`에 캐릭터별 위치)
 - `check_swap.png`: 원본 얼굴에 표정 파츠를 바꿔 끼운 모습
+- `--eye_split X`: 좌우 나누는 열을 고정해요. 표정을 추가하면 자동 계산이 바뀔 수 있어서(miku: angry 눈썹이 가운데로 모여 540 → 544), 이미 만든 리그와 맞추려면 기존 값을 넣어요 (miku `--eye_split 540`).
+- `--tears <표정>`: 감은 눈으로 우는 표정은 See-through가 눈물을 `irides`(눈동자)에 넣어요. 그 표정의 irides를 `tears.png`로 옮기고 눈동자는 비워요.
+- `--wide_blush <표정>`: 볼에서 코까지 이어진 띠 모양 홍조도 받아요 (기본은 둥근 덩어리만, 윤곽선이 어긋난 가는 줄을 거르려고).
+
+얼굴 확인 페이지: `examples/miku/rig/face_viewer.py`가 `face_viewer_template.html`에 이미지(얼굴 부분만 잘라 내장)를 넣어 `face_viewer/index.html` 한 파일을 만들어요. 인터넷 없이 열려요. 표정 한 벌(0~9, -, =), 부위별 썸네일 클릭, 무작위(R), 입력 그림 비교(Space·나눠 보기·반투명), 배경·확대, `exclude.json`(안 쓰는 파츠는 목록에서 빼고 한 벌에서 빌려 씀). 주소 끝 `#e=crying&mouth=smile&tab=mouth`로 시작 상태를 정해요.
 
 ![표정 바꿔 끼우기](images/rig_face_swap.png)
 

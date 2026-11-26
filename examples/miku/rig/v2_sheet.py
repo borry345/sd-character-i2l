@@ -61,23 +61,23 @@ def expr_swap(e):
 
 
 def render_expr(e):
+    """expression set on the default pose; extras placed as rig.json face.extras_place says
+    (blush, sweat, tears right in front of face; anger in front of everything)"""
     sw, extra = expr_swap(e)
-    im = render(swap=sw)
-    if extra:  # blush / sweat right in front of the face: redraw everything in front of the face on top
-        base = Image.new('RGBA', im.size, (255, 255, 255, 255))
-        order = rig['layers_front_to_back']
-        fi = [L['name'] for L in order].index('face')
-        for L in reversed(order):
-            p = sw.get(L['name'], L['file']) if L['name'] in sw else L['file']
-            if p is None:
-                continue
-            base.alpha_composite(img(p))
-            if L['name'] == 'face':
-                for k in extra:
-                    base.alpha_composite(img(rig['slots']['face']['swap'][e][k]))
-        im = base
-        _ = fi
-    return im
+    parts = rig['slots']['face']['swap'][e]
+    out = Image.new('RGBA', tuple(rig['canvas']), (255, 255, 255, 255))
+    for L in reversed(rig['layers_front_to_back']):
+        p = sw[L['name']] if L['name'] in sw else L['file']
+        if p is None:
+            continue
+        out.alpha_composite(img(p))
+        if L['name'] == 'face':
+            for k in extra:
+                if k != 'anger':
+                    out.alpha_composite(img(parts[k]))
+    if 'anger' in extra:
+        out.alpha_composite(img(parts['anger']))
+    return out
 
 
 def main():
@@ -90,8 +90,9 @@ def main():
                                 'tail_right_tip': 10})]
     cells = [(t, render(a)) for t, a in poses]
     rows.append(('자세 (확인용 테스트 뼈)', cells, (150, 150, 900, 840)))
-    rows.append(('표정 (face 슬롯)', [(e, render_expr(e)) for e in ['calm', 'smile', 'ah', 'ee', 'oh', 'surprised', 'sleeping']],
-                 (380, 240, 680, 470)))
+    ex = list(rig['slots']['face']['swap'])
+    rows.append(('표정 (face 슬롯) 1', [(e, render_expr(e)) for e in ex[:6]], (380, 230, 680, 470)))
+    rows.append(('표정 (face 슬롯) 2', [(e, render_expr(e)) for e in ex[6:]], (380, 230, 680, 470)))
     hs = rig['slots']['hand_l']['swap']
     hr = rig['slots']['hand_r']['swap']
     hc = []

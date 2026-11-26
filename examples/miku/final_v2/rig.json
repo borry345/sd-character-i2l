@@ -427,37 +427,37 @@
      "mouth": "variants/expressions/smile/mouth.png"
     },
     "ah": {
-     "eyebrow_l": "variants/expressions/ah/eyebrow_l.png",
-     "eyebrow_r": "variants/expressions/ah/eyebrow_r.png",
-     "eyelash_l": "variants/expressions/ah/eyelash_l.png",
-     "eyelash_r": "variants/expressions/ah/eyelash_r.png",
-     "eyewhite_l": "variants/expressions/ah/eyewhite_l.png",
-     "eyewhite_r": "variants/expressions/ah/eyewhite_r.png",
-     "irides_l": "variants/expressions/ah/irides_l.png",
-     "irides_r": "variants/expressions/ah/irides_r.png",
-     "mouth": "variants/expressions/ah/mouth.png"
+     "mouth": "variants/expressions/ah/mouth.png",
+     "eyelash_l": "layers/08_eyelash_l.png",
+     "eyelash_r": "layers/09_eyelash_r.png",
+     "irides_l": "layers/10_irides_l.png",
+     "irides_r": "layers/11_irides_r.png",
+     "eyewhite_l": "layers/12_eyewhite_l.png",
+     "eyewhite_r": "layers/13_eyewhite_r.png",
+     "eyebrow_l": "layers/14_eyebrow_l.png",
+     "eyebrow_r": "layers/15_eyebrow_r.png"
     },
     "ee": {
-     "eyebrow_l": "variants/expressions/ee/eyebrow_l.png",
-     "eyebrow_r": "variants/expressions/ee/eyebrow_r.png",
-     "eyelash_l": "variants/expressions/ee/eyelash_l.png",
-     "eyelash_r": "variants/expressions/ee/eyelash_r.png",
-     "eyewhite_l": "variants/expressions/ee/eyewhite_l.png",
-     "eyewhite_r": "variants/expressions/ee/eyewhite_r.png",
-     "irides_l": "variants/expressions/ee/irides_l.png",
-     "irides_r": "variants/expressions/ee/irides_r.png",
-     "mouth": "variants/expressions/ee/mouth.png"
+     "mouth": "variants/expressions/ee/mouth.png",
+     "eyelash_l": "layers/08_eyelash_l.png",
+     "eyelash_r": "layers/09_eyelash_r.png",
+     "irides_l": "layers/10_irides_l.png",
+     "irides_r": "layers/11_irides_r.png",
+     "eyewhite_l": "layers/12_eyewhite_l.png",
+     "eyewhite_r": "layers/13_eyewhite_r.png",
+     "eyebrow_l": "layers/14_eyebrow_l.png",
+     "eyebrow_r": "layers/15_eyebrow_r.png"
     },
     "oh": {
-     "eyebrow_l": "variants/expressions/oh/eyebrow_l.png",
-     "eyebrow_r": "variants/expressions/oh/eyebrow_r.png",
-     "eyelash_l": "variants/expressions/oh/eyelash_l.png",
-     "eyelash_r": "variants/expressions/oh/eyelash_r.png",
-     "eyewhite_l": "variants/expressions/oh/eyewhite_l.png",
-     "eyewhite_r": "variants/expressions/oh/eyewhite_r.png",
-     "irides_l": "variants/expressions/oh/irides_l.png",
-     "irides_r": "variants/expressions/oh/irides_r.png",
-     "mouth": "variants/expressions/oh/mouth.png"
+     "mouth": "variants/expressions/oh/mouth.png",
+     "eyelash_l": "layers/08_eyelash_l.png",
+     "eyelash_r": "layers/09_eyelash_r.png",
+     "irides_l": "layers/10_irides_l.png",
+     "irides_r": "layers/11_irides_r.png",
+     "eyewhite_l": "layers/12_eyewhite_l.png",
+     "eyewhite_r": "layers/13_eyewhite_r.png",
+     "eyebrow_l": "layers/14_eyebrow_l.png",
+     "eyebrow_r": "layers/15_eyebrow_r.png"
     },
     "surprised": {
      "eyebrow_l": "variants/expressions/surprised/eyebrow_l.png",
@@ -472,18 +472,128 @@
      "sweat": "variants/expressions/surprised/sweat.png"
     },
     "sleeping": {
-     "eyebrow_l": "variants/expressions/sleeping/eyebrow_l.png",
-     "eyebrow_r": "variants/expressions/sleeping/eyebrow_r.png",
-     "eyelash_l": "variants/expressions/sleeping/eyelash_l.png",
-     "eyelash_r": "variants/expressions/sleeping/eyelash_r.png",
-     "eyewhite_l": "variants/expressions/sleeping/eyewhite_l.png",
-     "eyewhite_r": "variants/expressions/sleeping/eyewhite_r.png",
-     "irides_l": "variants/expressions/sleeping/irides_l.png",
-     "irides_r": "variants/expressions/sleeping/irides_r.png",
-     "mouth": "variants/expressions/sleeping/mouth.png"
+     "mouth": "variants/expressions/sleeping/mouth.png",
+     "eyelash_l": "variants/expressions/calm/eyelash_l.png",
+     "eyelash_r": "variants/expressions/calm/eyelash_r.png",
+     "irides_l": "variants/expressions/calm/irides_l.png",
+     "irides_r": "variants/expressions/calm/irides_r.png",
+     "eyewhite_l": "variants/expressions/calm/eyewhite_l.png",
+     "eyewhite_r": "variants/expressions/calm/eyewhite_r.png",
+     "eyebrow_l": "variants/expressions/calm/eyebrow_l.png",
+     "eyebrow_r": "variants/expressions/calm/eyebrow_r.png"
+    },
+    "pet": {
+     "blush": "variants/expressions/pet/blush.png",
+     "eyelash_l": "variants/expressions/surprised/eyelash_l.png",
+     "eyelash_r": "variants/expressions/surprised/eyelash_r.png",
+     "irides_l": "variants/expressions/surprised/irides_l.png",
+     "irides_r": "variants/expressions/surprised/irides_r.png",
+     "eyewhite_l": "variants/expressions/surprised/eyewhite_l.png",
+     "eyewhite_r": "variants/expressions/surprised/eyewhite_r.png",
+     "eyebrow_l": "variants/expressions/surprised/eyebrow_l.png",
+     "eyebrow_r": "variants/expressions/surprised/eyebrow_r.png",
+     "mouth": "variants/expressions/ah/mouth.png"
+    },
+    "crying": {
+     "blush": "variants/expressions/crying/blush.png",
+     "eyebrow_l": "variants/expressions/crying/eyebrow_l.png",
+     "eyebrow_r": "variants/expressions/crying/eyebrow_r.png",
+     "eyelash_l": "variants/expressions/crying/eyelash_l.png",
+     "eyelash_r": "variants/expressions/crying/eyelash_r.png",
+     "eyewhite_l": "variants/expressions/crying/eyewhite_l.png",
+     "eyewhite_r": "variants/expressions/crying/eyewhite_r.png",
+     "irides_l": "variants/expressions/crying/irides_l.png",
+     "irides_r": "variants/expressions/crying/irides_r.png",
+     "mouth": "variants/expressions/crying/mouth.png",
+     "tears": "variants/expressions/crying/tears.png"
+    },
+    "question": {
+     "blush": "variants/expressions/question/blush.png",
+     "eyebrow_l": "variants/expressions/question/eyebrow_l.png",
+     "eyebrow_r": "variants/expressions/question/eyebrow_r.png",
+     "eyelash_l": "variants/expressions/question/eyelash_l.png",
+     "eyelash_r": "variants/expressions/question/eyelash_r.png",
+     "eyewhite_l": "variants/expressions/question/eyewhite_l.png",
+     "eyewhite_r": "variants/expressions/question/eyewhite_r.png",
+     "irides_l": "variants/expressions/question/irides_l.png",
+     "irides_r": "variants/expressions/question/irides_r.png",
+     "mouth": "variants/expressions/question/mouth.png"
+    },
+    "angry": {
+     "anger": "variants/expressions/angry/anger.png",
+     "blush": "variants/expressions/angry/blush.png",
+     "eyebrow_l": "variants/expressions/angry/eyebrow_l.png",
+     "eyebrow_r": "variants/expressions/angry/eyebrow_r.png",
+     "eyelash_l": "variants/expressions/angry/eyelash_l.png",
+     "eyelash_r": "variants/expressions/angry/eyelash_r.png",
+     "eyewhite_l": "variants/expressions/angry/eyewhite_l.png",
+     "eyewhite_r": "variants/expressions/angry/eyewhite_r.png",
+     "irides_l": "variants/expressions/angry/irides_l.png",
+     "irides_r": "variants/expressions/angry/irides_r.png",
+     "mouth": "variants/expressions/angry/mouth.png"
     }
    },
-   "note": "replace these layers with the expression set; a part missing in a set (e.g. irides in calm, closed eyes) = hide it. blush (smile) and sweat (surprised): draw right in front of face"
+   "note": "replace these layers with the expression set; a part missing in a set (e.g. irides in calm, closed eyes) = hide it. Extra parts (not in layers) are drawn as in extras_place",
+   "extras_place": {
+    "blush": "right in front of face",
+    "sweat": "right in front of face",
+    "tears": "right in front of face (eyelash in front of it)",
+    "anger": "in front of everything (over front_hair)"
+   },
+   "borrowed": {
+    "ah": {
+     "eyelash_l": "base",
+     "eyelash_r": "base",
+     "irides_l": "base",
+     "irides_r": "base",
+     "eyewhite_l": "base",
+     "eyewhite_r": "base",
+     "eyebrow_l": "base",
+     "eyebrow_r": "base"
+    },
+    "ee": {
+     "eyelash_l": "base",
+     "eyelash_r": "base",
+     "irides_l": "base",
+     "irides_r": "base",
+     "eyewhite_l": "base",
+     "eyewhite_r": "base",
+     "eyebrow_l": "base",
+     "eyebrow_r": "base"
+    },
+    "oh": {
+     "eyelash_l": "base",
+     "eyelash_r": "base",
+     "irides_l": "base",
+     "irides_r": "base",
+     "eyewhite_l": "base",
+     "eyewhite_r": "base",
+     "eyebrow_l": "base",
+     "eyebrow_r": "base"
+    },
+    "sleeping": {
+     "eyelash_l": "calm",
+     "eyelash_r": "calm",
+     "irides_l": "calm",
+     "irides_r": "calm",
+     "eyewhite_l": "calm",
+     "eyewhite_r": "calm",
+     "eyebrow_l": "calm",
+     "eyebrow_r": "calm"
+    },
+    "pet": {
+     "eyelash_l": "surprised",
+     "eyelash_r": "surprised",
+     "irides_l": "surprised",
+     "irides_r": "surprised",
+     "eyewhite_l": "surprised",
+     "eyewhite_r": "surprised",
+     "eyebrow_l": "surprised",
+     "eyebrow_r": "surprised",
+     "mouth": "ah"
+    }
+   },
+   "borrowed_note": "parts the user does not use (face_v2/exclude.json): the set uses the part of another expression (base = the default layer) instead"
   },
   "tails": {
    "default": "split3 (root/mid/tip)",
@@ -499,7 +609,7 @@
   "v1": "final/miku_v1",
   "arms": "seethrough_test/rig/arms/final/arms_rig.json",
   "legs": "seethrough_test/rig/legs",
-  "face": "seethrough_test/rig/face/face_parts.json",
+  "face": "seethrough_test/rig/face_v2/face_parts.json",
   "tails": "seethrough_test/rig/tails/README.md"
  }
 }

@@ -1,0 +1,6 @@
+{
+ "what": "parts the user will not use (2026-11-26). Files stay in face_v2; the viewer and later the rig leave them out. Value = the expression whose part is used instead when the whole set of that expression is worn.",
+ "eyes": {"ah": "base", "ee": "base", "oh": "base", "sleeping": "calm", "pet": "surprised"},
+ "eyebrows": {"ah": "base", "ee": "base", "oh": "base", "sleeping": "calm", "pet": "surprised"},
+ "mouth": {"pet": "ah"}
+}

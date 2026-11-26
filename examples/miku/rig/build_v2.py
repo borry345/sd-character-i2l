@@ -23,7 +23,12 @@ V1 = 'final/miku_v1/layers'
 R = 'seethrough_test/rig'
 OUT = 'final/miku_v2'
 FONT = ImageFont.truetype('C:/Windows/Fonts/malgun.ttf', 18)
-EXPR = ['calm', 'smile', 'ah', 'ee', 'oh', 'surprised', 'sleeping']
+EXPR = ['calm', 'smile', 'ah', 'ee', 'oh', 'surprised', 'sleeping', 'pet', 'crying', 'question', 'angry']
+FACE = 'face_v2'  # face_parts.py output for all expressions (+ exclude.json: parts the user does not use)
+EX_GROUPS = {'eyes': [f'{t}_{s}' for t in ('eyelash', 'irides', 'eyewhite') for s in 'lr'],
+             'eyebrows': ['eyebrow_l', 'eyebrow_r'], 'mouth': ['mouth']}
+EXTRA_PLACE = {'blush': 'right in front of face', 'sweat': 'right in front of face',
+               'tears': 'right in front of face (eyelash in front of it)', 'anger': 'in front of everything (over front_hair)'}
 HANDS = ['default', 'fist', 'open', 'mic', 'peace', 'relax', 'point']
 EYE_SPLIT = 540
 
@@ -134,16 +139,26 @@ def main():
         names.append({'name': n, 'file': f'layers/{fn}', 'bone': b})
     # variants
     var = {'expressions': {}, 'hands': {'l': {}, 'r': {}}, 'tails_whole': {}}
+    ex = json.load(open(f'{R}/{FACE}/exclude.json', encoding='utf-8'))
+    skip = {(e, p): use for g, m in ex.items() if g in EX_GROUPS for e, use in m.items() for p in EX_GROUPS[g]}
     for e in EXPR:
         d = f'{OUT}/variants/expressions/{e}'
         os.makedirs(d)
         parts = {}
-        for f in sorted(os.listdir(f'{R}/face/{e}')):
-            a = A(f'{R}/face/{e}/{f}').copy()
+        for f in sorted(os.listdir(f'{R}/{FACE}/{e}')):
+            if (e, f[:-4]) in skip:
+                continue  # not used (user): the set borrows it below
+            a = A(f'{R}/{FACE}/{e}/{f}').copy()
             a[a[..., 3] <= 15] = 0  # same clean-up as v1 (alpha <= 15 removed)
             Image.fromarray(a).save(f'{d}/{f}')
             parts[f[:-4]] = f'variants/expressions/{e}/{f}'
         var['expressions'][e] = parts
+    default = {n['name']: n['file'] for n in names}
+    for (e, p), use in skip.items():  # borrowed part: the default layer, or another set's file; none there = hidden
+        src = default.get(p) if use == 'base' else var['expressions'].get(use, {}).get(p)
+        if src:
+            var['expressions'][e][p] = src
+    var['borrowed'] = {e: {p: use for (e2, p), use in skip.items() if e2 == e} for e in EXPR}
     for s in ('l', 'r'):
         d = f'{OUT}/variants/hands/{s}'
         os.makedirs(d)
@@ -172,13 +187,17 @@ def main():
                                 'eyebrow_l', 'eyebrow_r', 'mouth'],
                      'swap': var['expressions'],
                      'note': 'replace these layers with the expression set; a part missing in a set (e.g. irides in calm, '
-                             'closed eyes) = hide it. blush (smile) and sweat (surprised): draw right in front of face'},
+                             'closed eyes) = hide it. Extra parts (not in layers) are drawn as in extras_place',
+                     'extras_place': EXTRA_PLACE,
+                     'borrowed': {e: b for e, b in var['borrowed'].items() if b},
+                     'borrowed_note': 'parts the user does not use (face_v2/exclude.json): the set uses the part of '
+                                      'another expression (base = the default layer) instead'},
             'tails': {'default': 'split3 (root/mid/tip)', 'whole': var['tails_whole'],
                       'note': 'whole = one piece per tail; use instead of the 3 tail_* layers (same place in the order)'},
         },
         'joint_lines': 'a *_joint_line layer moves with its bone but is drawn behind the piece above it (see order)',
         'sources': {'v1': 'final/miku_v1', 'arms': f'{R}/arms/final/arms_rig.json', 'legs': f'{R}/legs',
-                    'face': f'{R}/face/face_parts.json', 'tails': f'{R}/tails/README.md'},
+                    'face': f'{R}/{FACE}/face_parts.json', 'tails': f'{R}/tails/README.md'},
     }
     json.dump(rig, open(f'{OUT}/rig.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 
@@ -200,6 +219,8 @@ def write_psd(layers, var, W, H):
     for e, parts in var['expressions'].items():
         g = Group.new(vg, f'expr_{e}', open_folder=False)
         for k, p in parts.items():
+            if not p.startswith(f'variants/expressions/{e}/'):
+                continue  # borrowed part: lives in another group / the default layers
             g.append(PixelLayer.frompil(Image.open(f'{OUT}/{p}'), psd, k))
         g.visible = False
     for s in ('l', 'r'):

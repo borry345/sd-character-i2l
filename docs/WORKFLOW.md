@@ -166,9 +166,12 @@ miku에서는 **전부 B, handwear-l만 A** ("01" 글자를 원본 그대로 살
    - 가리키기처럼 손만 바꾸기 어려운 모양은, 리그 조각으로 그 팔을 어깨에서 든 그림을 만들어 편집 → 자른 뒤 되돌려요.
    - See-through가 손에 쥔 물건(마이크)을 지우면 입력 그림에서 그 부분을 가져와요.
 4. **트윈테일** `split_chain.py`: 사람이 V자 선 2줄 → 뿌리/중간/끝, 위 조각이 앞(사용자 결정), 이음매는 `--feather`로 서서히. 안 자른 버전도 같이 둬요. ([도구 설명](TOOLS.md#split_chainpy))
-5. **표정**: 원본을 이미지 편집 AI에 넣고 "포즈·구도·크기 그대로, 표정만 바꿔 줘"로 한 장씩 (miku: calm·smile·ah·ee·oh·surprised·sleeping. 동작 목록에서 고름: 눈 깜빡임 → calm, 좋아하기·환호 → smile, 노래 입 모양 → ah·ee·oh, 드래그로 들려 옮겨질 때 → surprised, 누워서 자기 → sleeping)
+5. **표정**: 원본을 이미지 편집 AI에 넣고 "포즈·구도·크기 그대로, 표정만 바꿔 줘"로 한 장씩 (miku 11종: calm·smile·ah·ee·oh·surprised·sleeping + pet·crying·question·angry. 동작 목록에서 고름: 눈 깜빡임 → calm, 좋아하기·환호 → smile, 노래 입 모양 → ah·ee·oh, 드래그로 들려 옮겨질 때 → surprised, 누워서 자기 → sleeping)
+   - **먼저 입력 검사:** 원본과 실루엣 겹침(IoU)이 0.9 이상인지 봐요(기존 7장 0.93~0.94). question·angry 처음 그림은 캐릭터 전체를 다시 그려 0.73·0.58이라 다시 받았어요("Edit this exact image. Change ONLY the facial expression ... pixel for pixel"). 배경은 원본처럼 투명이어야 해요.
    → 원본 눈·입과 같은 설정(seed·`-HeadGrow`)으로 See-through
-   → `face_parts.py`로 눈 좌·우, 입, 홍조, 땀 ([도구 설명](TOOLS.md#face_partspy))
+   → `face_parts.py`로 눈 좌·우, 입, 홍조, 땀, 눈물 ([도구 설명](TOOLS.md#face_partspy))
+   - See-through가 빠뜨린 표시(angry의 분노 마크)는 입력 그림에서 직접 잘라요 (`examples/miku/rig/anger_mark.py`).
+   - **안 쓸 파츠 고르기 ✋:** 얼굴 확인 페이지(`face_viewer.py` → `face_viewer/index.html`, 표정·부위를 클릭으로 바꿔 보는 옷입히기 방식)에서 보고, 비슷해서 안 쓸 파츠를 `exclude.json`에 적어요. 그 표정 세트는 다른 표정의 파츠를 빌려 써요 (miku: 눈·눈썹 ah·ee·oh·sleeping·pet, 입 pet).
    - 처음부터 새로 그린 일러는 머리·팔·다리 위치가 달라서 부품으로 못 써요.
 6. 다른 캐릭터에도 쓸 효과(땀방울 등)는 `effects/`에 잘라서 따로 둬요.
 7. 치마·앞머리·몸통은 조각으로 나누지 않았어요 (사용자 결정: 팔다리면 충분, 나머지는 메시 변형으로 할지 나중에). 목 보강(목 늘리기·옆 윤곽선)도 하지 않기로 했어요 (사용자 결정).
@@ -183,13 +186,16 @@ miku에서는 **전부 B, handwear-l만 A** ("01" 글자를 원본 그대로 살
 *트윈테일 3조각: 곧게, 관절마다 ±10°, ±20°*
 
 ![표정 바꿔 끼우기](images/rig_face_swap.png)
-*v1 얼굴에 표정 7장의 눈·입만 바꿔 끼움 (smile 홍조, surprised 땀 포함)*
+*v1 얼굴에 표정의 눈·입만 바꿔 끼움 (smile 홍조, surprised 땀 포함)*
+
+![얼굴 확인 페이지](images/face_viewer.png)
+*얼굴 확인 페이지: 왼쪽 탭에서 부위를 고르고 썸네일을 클릭해 바꿔 입혀요. Space·나눠 보기로 입력 그림과 비교*
 
 ## 9. 나눈 레이어 확정 + 나눔 확인
 나눈 조각을 한 벌로 묶어요 → [examples/miku/final_v2/](../examples/miku/final_v2/) (`README.md`에 자세히).
 - **결과물**
   - `layers/` 45장 (앞→뒤 번호). 쌓으면 v1과 같은 그림이고, 다른 곳은 다시 만든 맨팔·손뿐이에요.
-  - `rig.json`의 `layers_front_to_back`(그리는 순서)와 `slots`(손 l 6종·r 7종, 표정 7종, 안 자른 트윈테일)
+  - `rig.json`의 `layers_front_to_back`(그리는 순서)와 `slots`(손 l 6종·r 7종, 표정 11종(안 쓰는 파츠는 `borrowed`로 다른 표정 것을 빌려 씀), 안 자른 트윈테일)
   - `variants/`, `miku_v2.psd`(기본 레이어 + 숨긴 variants 그룹)
 - **확인용 (테스트):** `rig.json`의 `bones` 16개와 `sheet.png`의 자세는 나눈 조각이 잘 움직이는지 보려고 임시로 만든 거예요. 실제 리깅은 이 프로젝트 범위가 아니라서, 리깅 도구에서 뼈를 새로 잡으세요.
 - 만든 스크립트: `examples/miku/rig/build_v2.py`, `v2_sheet.py`, `hole_diag.py`. 작업 폴더의 중간 결과(`seethrough_test/...`)를 읽어서 저장소에서는 그대로 돌아가지 않아요 (형식 참고용).

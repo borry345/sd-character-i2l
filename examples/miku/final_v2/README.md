@@ -17,9 +17,16 @@
 - 나누지 않은 것: 치마, 앞머리·옆머리, 몸통·넥타이(사용자 결정: 팔다리면 충분). 목 보강도 하지 않았어요(사용자 결정).
 
 ## 바꿔 끼우는 파츠 (`variants/`)
-- `expressions/<표정>/` : 표정 7종(calm, smile, ah, ee, oh, surprised, sleeping)
+- `expressions/<표정>/` : 표정 11종(calm, smile, ah, ee, oh, surprised, sleeping, pet, crying, question, angry)
   - 눈·눈썹·입을 통째로 바꿔요. 그 세트에 없는 부분(감은 눈의 눈동자 등)은 숨겨요.
-  - blush(smile)와 sweat(surprised)는 얼굴 바로 앞에 그려요.
+  - 덧붙는 표시는 이렇게 그려요(`rig.json`의 `extras_place`).
+    - blush(smile, pet, crying, question, angry), sweat(surprised), tears(crying): 얼굴 바로 앞
+    - anger(angry 분노 마크): 맨 앞(앞머리 위). See-through가 빠뜨려서 입력 그림에서 직접 잘랐어요.
+  - **안 쓰는 파츠(사용자 결정)**
+    - 해당 파츠: 눈·눈썹(ah, ee, oh, sleeping, pet), 입(pet)
+    - 이 파일들은 넣지 않았어요. 그 표정 세트는 다른 표정의 파츠를 빌려 써요(`rig.json`의 `borrowed`).
+    - 빌려 쓰는 곳: ah·ee·oh → 기본 레이어, sleeping → calm, pet 눈·눈썹 → surprised(같은 `><`), pet 입 → ah
+  - 얼굴만 빠르게 바꿔 보는 확인 페이지는 작업 폴더의 `seethrough_test/rig/face_viewer/index.html`에 있어요.
 - `hands/{l,r}/` : 손 모양. 손목은 돌리지 않고 손만 갈아 끼워요(사용자 결정). 모두 같은 손목 선에서 잘랐어요.
   - l : default, fist, open, mic, peace, relax
   - r : default, fist, open, mic(마이크 없는 주먹), peace, relax, point
@@ -27,7 +34,7 @@
 - `effects/sweat_drop.png` : 공용 효과의 복사본이에요(원본은 저장소의 `effects/sweat_drop/`).
 
 ## 파일
-- `miku_v2.psd` : 기본 레이어 45장과 숨긴 `variants (hidden)` 그룹(표정·손·안 자른 트윈테일)
+- `miku_v2.psd` : 기본 레이어 45장과 숨긴 `variants (hidden)` 그룹(표정 11종·손·안 자른 트윈테일, 빌려 쓰는 파츠는 원래 자리에만 있어요)
 - `rig.json`
   - `layers_front_to_back` : 그리는 순서(**결과물**)
   - `slots` : 바꿔 끼우는 파츠 목록(**결과물**)
