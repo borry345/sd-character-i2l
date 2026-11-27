@@ -36,6 +36,7 @@
 - `effects/sweat_drop.png` : 공용 효과의 복사본이에요(원본은 저장소의 `effects/sweat_drop/`).
 
 ## 파일
+- `miku_v2.stretch` : Stretchy Studio 프로젝트 파일. 관절 8개(rig.json 테스트 뼈 위치)를 넣고 팔다리를 Remesh해 둬서, 편집기에 끌어다 놓으면 관절 호를 마우스로 끌어 바로 굽힐 수 있어요.
 - `miku_v2_stretchy.psd` : [Stretchy Studio](https://github.com/MangoLion/stretchystudio)용 PSD (`seethrough_test/rig/export_stretchy.py`)
   - 레이어를 그림 범위로 잘라 저장했어요. 원래 PSD는 레이어가 모두 1024 전체 크기라, Stretchy가 범위로 뼈를 추정하면 엉뚱해져요.
   - 이름을 See-through 태그로 바꿨어요(`front hair`, `back hair`, `handwear-l` …). Stretchy는 정확히 `handwear-l`인 레이어만 왼팔 뼈에 붙여서, 팔·다리 조각은 모두 같은 이름(`handwear-l/r`, `legwear-l/r`)이에요.

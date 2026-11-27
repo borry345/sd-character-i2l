@@ -203,7 +203,7 @@ miku에서는 **전부 B, handwear-l만 A** ("01" 글자를 원본 그대로 살
 ![v2 확인 시트](../examples/miku/final_v2/sheet.png)
 
 ### 리깅 도구로 넘기기
-Stretchy Studio(See-through 결과용 오픈소스)에 넣을 PSD는 `export_stretchy.py`로 따로 만들어요. 레이어를 그림 범위로 자르고, 이름을 See-through 태그로, 좌우는 캐릭터 기준으로 바꿔요. v1 21/21, v2 45/45가 자동 인식되고, 관절 기준점을 `rig.json` 값으로 넣으면 팔꿈치·무릎이 틈 없이 굽었어요. 자세한 내용은 [RIGGING_TOOLS.md](RIGGING_TOOLS.md).
+Stretchy Studio(See-through 결과용 오픈소스)에 넣을 PSD는 `export_stretchy.py`로 따로 만들어요. 레이어를 그림 범위로 자르고, 이름을 See-through 태그로, 좌우는 캐릭터 기준으로 바꿔요. v1 21/21, v2 45/45가 자동 인식되고, 관절을 `rig.json` 값으로 넣고 팔다리를 Remesh한 `.stretch` 파일(`miku_v1.stretch`, `miku_v2.stretch`)을 열어 관절 호를 마우스로 끌면 실제 팔꿈치·무릎에서 꺾여요. 자세한 내용은 [RIGGING_TOOLS.md](RIGGING_TOOLS.md).
 
 ### 나눔 확인: 움직이면 구멍이 드러나는가
 테스트 뼈로 동작 목록의 자세 8개(걷기, 의자에 앉기, 무릎 꿇기, 노래, 환호, 들려서 옮겨짐, 머리 기울기 + 트윈테일 등)를 만들어 확인했어요 (`hole_diag.py`). 두 가지를 셌어요.

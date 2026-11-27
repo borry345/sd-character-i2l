@@ -176,4 +176,6 @@ PC A(RTX 3070 8GB, RAM 16GB)에서 예제 한 장을 돌리기까지의 시도�
 | Stretchy Studio에서 뼈가 캔버스 가운데에 몰리거나 엉뚱함 | 우리 PSD는 레이어가 모두 1024 전체 크기라 레이어 범위가 전부 캔버스 전체 | `export_stretchy.py`로 레이어를 그림 범위로 잘라 저장한 PSD 사용 |
 | Stretchy에서 팔다리가 반대쪽 어깨·엉덩이에 붙음(다리 X자) | Stretchy 뼈대는 캐릭터 본인 왼쪽을 `leftArm`으로 씀(우리 l/r은 그림 기준) | Stretchy용 PSD는 좌우를 캐릭터 기준으로 (우리 `_l` → `-r`) |
 | Stretchy에서 팔 조각 일부가 양팔(bothArms)로 감 | `handwear-l_xxx`는 태그 검사 순서상 `handwear`로 인식 | 왼팔 조각은 모두 이름을 정확히 `handwear-l`로 |
+| Stretchy에서 팔꿈치 회전값을 넣어도 팔이 안 굽음 | 메시 가중치 휘기는 캔버스에서 관절 호를 마우스로 끌 때만 계산됨 | 호를 끌어서 굽히기 (숫자 입력 X) |
+| Stretchy에서 팔꿈치를 굽히면 위팔이 찢어지듯 늘어남 | 가중치는 메시를 만들 때의 관절 기준. 마법사 직후 메시는 어깨 옆 자동 관절 기준 | 관절을 옮긴 뒤 팔다리 레이어마다 Remesh, 또는 `miku_v*.stretch` 사용 |
 | Stretchy의 AI 자동 뼈대(DWPose)가 관절을 머리카락 속에 찍음 | SD(치비) 체형은 자세 인식 모델이 못 잡음 | 범위 추정 뼈대로 마치고 관절 기준점을 `rig.json` 값으로 ([RIGGING_TOOLS.md](RIGGING_TOOLS.md)) |

@@ -59,14 +59,21 @@ https://editor.stretchy.studio 를 브라우저 자동화(Playwright + Edge)로 
 | 그리는 순서 | 원래 순서 그대로, 그림도 원본과 같음 |
 | 자동 뼈대: 레이어 범위 | 팔다리가 올바른 쪽에 붙음. 팔꿈치가 어깨 바로 옆, 무릎이 다리 중간쯤이라 손으로 옮겨야 함 |
 | 자동 뼈대: AI 자세 인식(DWPose) | **실패**: 엉덩이·팔꿈치가 오른쪽 아래 머리카락에, 무릎이 트윈테일 안에. 머리가 큰 SD 체형을 못 잡는 듯 |
-| 굽히기 | 관절 기준점을 `rig.json` 테스트 뼈 위치로 넣고 회전 → v1·v2 모두 **팔꿈치·무릎이 틈 없이 부드럽게 굽음** |
+| 굽히기 (처음 시험) | 관절 기준점을 나중에 옮기고 속성 창에 회전값을 숫자로 넣음 → 팔꿈치·무릎은 **실제로 굽지 않았어요**(처음엔 굽었다고 잘못 봄, 보인 건 어깨·엉덩이 회전) |
+| 굽히기 (`.stretch`, 2026-11-27) | 관절 먼저 → 팔다리 Remesh → 캔버스에서 관절 호를 마우스로 끌기 → **실제 팔꿈치·무릎에서 꺾임**. 관절을 나중에 옮긴 예전 방식은 위팔이 찢어지듯 늘어남 |
+
+![팔꿈치·무릎: 예전 방식과 .stretch](images/stretchy_stretch_compare.png)
+*그림 왼쪽 팔꿈치 90°, 무릎 ±60°를 호를 끌어 굽힘. 왼쪽 두 칸 v1, 오른쪽 두 칸 v2 (각각 예전 방식 / .stretch)*
 
 ![레이어 대응 21/21](images/stretchy_mapping.png)
 ![범위로 잡은 관절](images/stretchy_joints_bounds.png)
 ![DWPose 실패](images/stretchy_joints_dwpose.png)
-![굽히기 확대 (위 v1, 아래 v2)](images/stretchy_bend_zoom.png)
+![처음 시험: 숫자 입력이라 팔꿈치·무릎은 안 굽고 어깨·엉덩이만 회전 (위 v1, 아래 v2)](images/stretchy_bend_zoom.png)
 
 ## Stretchy에서 쓰는 법 (miku 기준)
+**가장 쉬운 방법:** 관절을 미리 넣어 둔 [`final_v1/miku_v1.stretch`](../examples/miku/final_v1/miku_v1.stretch)(또는 `final_v2/miku_v2.stretch`)를 편집기에 끌어다 놓아요. 아래 1~3단계가 이미 되어 있어요 (만든 스크립트 `stretchy_test/st5.py`).
+
+PSD에서 직접 시작할 때:
 1. 편집기에 `miku_v1_stretchy.psd`(또는 v2)를 끌어다 놓아요 → 레이어 대응이 모두 초록인지 봐요.
 2. Continue → 그리는 순서 확인 → **Adjust Joints에서 DWPose를 쓰지 말고** Finish Setup을 눌러요(범위 추정 뼈대).
 3. 관절 그룹을 골라 오른쪽 속성 창의 Pivot에 `rig.json` 테스트 뼈 위치를 넣어요(캔버스 좌표가 같아요).
@@ -82,7 +89,11 @@ https://editor.stretchy.studio 를 브라우저 자동화(Playwright + Edge)로 
      | `rightKnee` | `shin_l` | (485, 722) |
      | `leftLeg` | `thigh_r` | (584, 621) |
      | `leftKnee` | `shin_r` | (605, 732) |
-4. Animation 모드에서 동작을 만들고 Export로 내보내요.
+   - **그다음 팔다리 레이어(`handwear-*`, `legwear-*`)마다 속성 창의 Remesh를 눌러요.**
+     - Stretchy는 메시를 만들 때의 관절 위치로 팔꿈치·무릎 가중치를 계산해요(관절 앞뒤 40px에서 서서히).
+     - 마법사가 끝날 때 이미 자동 관절 기준으로 메시가 만들어져 있어서, Remesh를 안 하면 위팔이 찢어지듯 늘어나요.
+4. **굽히기는 캔버스에서 관절의 노란 호를 마우스로 끌어요.** 속성 창 Rotation에 숫자를 넣으면 팔꿈치·무릎 메시는 휘지 않아요(가중치 계산이 호를 끌 때만 돌아요, `SkeletonOverlay.jsx`).
+5. Animation 모드에서 동작을 만들고 Export로 내보내요.
 
 ## 알게 된 것
 - **Stretchy는 메시를 변형해서 굽혀요.** 팔다리가 한 장인 v1도 잘 굽고, Stretchy·Live2D에서는 v2의 관절 조각이 꼭 필요하지 않아요.
@@ -91,8 +102,15 @@ https://editor.stretchy.studio 를 브라우저 자동화(Playwright + Edge)로 
   - 눈 좌우 분리(한쪽 눈 감기)
   - 손·표정 바꿔 끼우기. 단, Stretchy에는 자동으로 들어가지 않아요.
 - **SD 체형은 AI 자세 인식에 기대지 말 것:** 범위 추정으로 뼈대를 만들고 관절 위치만 `rig.json` 값으로 고치는 게 맞아요.
+- **순서: 관절 → Remesh → 호 끌기.** 관절을 나중에 옮기거나 숫자로 회전하면 제대로 안 굽어요.
+- **메시 변형 설정:** 속성 창 Mesh → Settings(바꾼 뒤 Remesh)에서 파츠마다 또는 전체로 정해요.
+  - Grid Spacing: 안쪽 점 간격. 기본은 면적의 제곱근 × 0.08(6~80)이고, 작을수록 촘촘해서 부드럽게 휘어요.
+  - Edge Points: 윤곽선 점 수. 기본은 면적의 제곱근 × 0.4(12~300)예요.
+  - Edge Padding(8), Alpha Threshold(5), Smooth Passes(0)
+  - Edit Mesh에서는 Deform 브러시(크기 5~300, 단단함 0~100)로 점을 직접 밀거나, 점을 더하고 뺄 수 있어요.
+  - 모양 키는 휘어진 모양을 0~1로 섞어요.
+  - 팔꿈치·무릎이 휘는 폭은 코드에 40px로 고정이고 화면 설정은 없어요. `.stretch` 안 `project.json`의 점별 `boneWeights`를 고치면 바꿀 수 있어요.
 
 ## 다음에 해 볼 수 있는 것 (아직 안 함)
-- **관절 위치까지 넣은 `.stretch` 프로젝트 파일 만들기:** 열자마자 굽힐 수 있게. 지금은 3번 단계를 손으로 해요.
 - **Live2D·Spine으로 내보내기 시험:** v1과 v2가 각각 어떻게 나오는지.
 - **짧은 동작(숨쉬기·손 흔들기)을 프레임으로 내보내기:** 움직일 때 이음매 확인.

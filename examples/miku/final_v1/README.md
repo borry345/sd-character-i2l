@@ -4,6 +4,7 @@
 리깅용으로 더 잘게 나눈 버전은 [final_v2](../final_v2/README.md)에 있어요.
 
 ## 무엇이 들어 있나
+- `miku_v1.stretch` : Stretchy Studio 프로젝트 파일. 관절 8개(rig.json 테스트 뼈 위치)를 넣고 팔다리를 Remesh해 둬서, 편집기에 끌어다 놓으면 관절 호를 마우스로 끌어 바로 굽힐 수 있어요.
 - `miku_v1_stretchy.psd` : [Stretchy Studio](https://github.com/MangoLion/stretchystudio)용 PSD (`seethrough_test/rig/export_stretchy.py`)
   - 레이어를 그림 범위로 잘라 저장했어요. 원래 PSD는 레이어가 모두 1024 전체 크기라, Stretchy가 범위로 뼈를 추정하면 엉뚱해져요.
   - 이름을 See-through 태그로 바꿨어요(`front hair`, `back hair`, `handwear-l` …). 
