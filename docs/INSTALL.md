@@ -107,7 +107,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass   # 지금 창에서�
 Get-Content $ROOT\outputs\test\summary.txt
 ```
 - `summary.txt`에 `EXIT=0`이 있고 `outputs\test\miku_chibi_sprite.psd`가 생기면 성공이에요. `ARGS=` 뒤에 `--tblr_split --seed 0`까지 다 들어갔는지도 보세요.
-- **경로는 절대 경로로** 주세요. 스크립트가 실행 중 `see-through` 폴더로 이동해서, 상대 경로는 그 폴더 기준으로 해석돼요.
+- 경로는 상대 경로로 줘도 돼요. 스크립트가 `see-through` 폴더로 이동하기 전에 절대 경로로 바꿔요. 그림을 `sources/`에 넣었다면 `-Src`에 파일 이름만 쓰고, `-OutDir`를 빼면 `result\<그림 이름>`에 저장돼요.
 - **`powershell -File tools\run_seethrough.ps1 -Extra @(...)` 형태로 부르지 마세요.** `-File`로 부르면 `-Extra` 배열의 첫 값만 전달돼서 `--tblr_split`, `--seed`가 조용히 빠져요. PowerShell 창에서 `&`로 부르세요.
 - 실행 전에 GPU를 쓰는 다른 프로그램(게임 런처, 메신저, 데스크톱 캐릭터 앱 등)을 닫으세요. 이유는 [TROUBLESHOOTING.md](TROUBLESHOOTING.md)에 있어요.
 

@@ -3,7 +3,7 @@
 예시: `examples/miku/input/miku_chibi_sprite.png` (1312×1199, 전신 SD 캐릭터) → `examples/miku/final_v1/miku_v1.psd` (21레이어) → `examples/miku/final_v2/` (리깅용으로 나눈 45레이어 + 바꿔 끼우는 파츠). 이 프로젝트의 목표는 **리깅할 수 있게 레이어를 나누는 것까지**이고, 리깅 자체는 범위 밖이에요.
 
 자동 파이프라인이 아니에요. **단계마다 확인 이미지를 보고 사람이 고르는** 흐름이고, 고르는 곳은 ✋로 표시했어요.
-명령의 `$PY`는 `env\Scripts\python.exe`(venv) 또는 `env\python.exe`(conda), 경로는 모두 절대 경로로 쓰는 걸 권해요.
+명령의 `$PY`는 `env\Scripts\python.exe`(venv) 또는 `env\python.exe`(conda), `run_seethrough.ps1`은 상대 경로도 받아요(그림 이름만 쓰면 `sources/`에서 찾고, 결과는 기본으로 `result/`).
 
 ```
 1. 여러 seed로 생성 ─▶ 2. seed 비교 ✋ ─▶ 3. 레이어마다 seed 골라 합치기 ✋
